@@ -1,6 +1,5 @@
 import {
   Controller,
-  UseGuards,
   HttpStatus,
   Response,
   // Request,
@@ -11,10 +10,8 @@ import {
   // Param,
   // Delete,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
