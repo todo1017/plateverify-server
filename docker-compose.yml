@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+
+  app:
+    container_name: plateverify_api_app
+    image: nestjs
+    restart: unless-stopped
+    tty: true
+    command: npm run start:dev
+    links:
+      - "database:database"
+    ports:
+      - 4001:3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - plateverify_api_network
+
+  database:
+    container_name: plateverify_api_db
+    image: postgres:12
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: todo
+      POSTGRES_USER: todo
+      POSTGRES_DB: todo
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    volumes:
+      - plateverify_api_volume:/var/lib/postgresql/data
+    networks:
+      - plateverify_api_network
+
+networks:
+  plateverify_api_network:
+    driver: bridge
+
+volumes: 
+  plateverify_api_volume:
