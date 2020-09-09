@@ -15,19 +15,19 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from "src/security/role.guard";
-import { Roles } from "src/security/roles.decorator";
-import { PschoolService } from './pschool.service';
+import { RoleGuard } from "src/guard/role.guard";
+import { Roles } from "src/guard/roles.decorator";
+import { SchoolService } from './school.service';
 import { SchoolCreateDto } from './dto/school-create.dto';
 import { SchoolUpdateDto } from './dto/school-update.dto';
 import { SchoolLogoDto } from './dto/school-logo.dto';
 
 @Controller('p/school')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
-export class PschoolController {
+export class SchoolController {
 
   constructor(
-    private pschoolService: PschoolService,
+    private pschoolService: SchoolService,
   ) {}
 
   @Post('list')

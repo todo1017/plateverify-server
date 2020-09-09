@@ -7,16 +7,16 @@ import {
   Body,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from "src/security/role.guard";
-import { Roles } from "src/security/roles.decorator";
-import { UserService } from 'src/security/user/user.service';
-import { UserCreateDto } from 'src/security/user/dto/create.dto';
-import { UserActivateDto } from 'src/security/user/dto/activate.dto';
-import { UserRemoveDto } from 'src/security/user/dto/remove.dto';
+import { RoleGuard } from "src/guard/role.guard";
+import { Roles } from "src/guard/roles.decorator";
+import { UserService } from './user.service';
+import { UserCreateDto } from './dto/create.dto';
+import { UserActivateDto } from './dto/activate.dto';
+import { UserRemoveDto } from './dto/remove.dto';
 
-@Controller('p/user')
+@Controller('users')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
-export class PuserController {
+export class UserController {
 
   constructor(
     private userService: UserService,
@@ -53,5 +53,5 @@ export class PuserController {
     const result = await this.userService.delete(userRemoveDto.id);
     return res.status(HttpStatus.OK).json(result);
   }
-
+  
 }

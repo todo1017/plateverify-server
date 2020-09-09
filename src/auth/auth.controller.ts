@@ -2,13 +2,8 @@ import {
   Controller,
   HttpStatus,
   Response,
-  // Request,
-  // Get,
   Post,
   Body,
-  // Put,
-  // Param,
-  // Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';

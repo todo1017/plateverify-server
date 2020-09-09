@@ -10,7 +10,7 @@ import { SchoolUpdateDto } from "./dto/school-update.dto";
 import { SchoolLogoDto } from "./dto/school-logo.dto";
 
 @Injectable()
-export class PschoolService {
+export class SchoolService {
   
   constructor(
     @InjectRepository(School)
