@@ -55,12 +55,12 @@ export class PschoolController {
   @Roles('plateverify', 'admin')
   @UseInterceptors(FileInterceptor('file'))
   public async logo(@Response() res, @Body() body, @UploadedFile() file) {
-    // const result = await this.pschoolService.uploadLogo({
-    //   id: body.id,
-    //   buffer: file.buffer,
-    //   ext: file.mimetype.split('/')[1]
-    // });
-    // return res.status(HttpStatus.OK).json(result);
+    const result = await this.pschoolService.uploadLogo({
+      id: body.id,
+      buffer: file.buffer,
+      ext: file.mimetype.split('/')[1]
+    });
+    return res.status(HttpStatus.OK).json(result);
     return res.status(HttpStatus.OK).json(file);
   }
 
