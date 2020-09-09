@@ -4,9 +4,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  BeforeInsert
+  BeforeInsert,
+  ManyToOne
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { School } from "./school.entity";
 
 @Entity()
 export class User {
@@ -27,6 +29,9 @@ export class User {
 
   @Column({ type: 'jsonb', default: ['partner'] })
   roles: string[];
+
+  @ManyToOne(type => School, school => school.users)
+  school: School;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

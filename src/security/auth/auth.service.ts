@@ -13,17 +13,17 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<any> {
-    let status = { success: true, message: '' };
+  // async register(registerDto: RegisterDto): Promise<any> {
+  //   let status = { success: true, message: '' };
 
-    try {
-      await this.userService.create(registerDto);
-    } catch (err) {
-      status = { success: false, message: err };
-    }
+  //   try {
+  //     await this.userService.create(registerDto);
+  //   } catch (err) {
+  //     status = { success: false, message: err };
+  //   }
     
-    return status;
-  }
+  //   return status;
+  // }
 
   async checkUser(loginDto: LoginDto): Promise<boolean> {
     const user = await this.userService.findByEmail(loginDto.email);
@@ -46,7 +46,8 @@ export class AuthService {
       email: "admin@plateverify.com",
       password: "plateverify4k",
       active: true,
-      roles: ["plateverify", "admin"]
+      roles: ["plateverify", "admin"],
+      school: ''
     };
     return await this.userService.create(superadmin);
   }

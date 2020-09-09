@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { UserCreateDto } from './dto/create.dto';
+import { UserActivateDto } from './dto/activate.dto';
 
 @Injectable()
 export class UserService {
@@ -33,6 +34,19 @@ export class UserService {
       );
     }
     user = await this.usersRepository.create(userCreateDto);
+    return await this.usersRepository.save(user);
+  }
+
+  public async activate(userActivateDto: UserActivateDto): Promise<User> {
+    let user = await this.usersRepository.findOne({id: userActivateDto.id});
+    if (!user) {
+      throw new HttpException(
+        'User not exist',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    user.active = userActivateDto.active;
+    
     return await this.usersRepository.save(user);
   }
 

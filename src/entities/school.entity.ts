@@ -4,12 +4,14 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
+import { User } from "./user.entity";
 
 @Entity()
 export class School {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   name: string;
@@ -29,9 +31,13 @@ export class School {
   @Column({ type: 'jsonb', default: [] })
   cameras: [{name: string, slug: string}];
 
+  @OneToMany(type => User, user => user.school)
+  users: User[];
+
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updated_at: Date;
+  
 }
