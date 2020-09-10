@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { SchoolModule } from './school/school.module';
 import { OffenderModule } from './offender/offender.module';
+import { VehicleModule } from './vehicle/vehicle.module';
+import { MemberModule } from './member/member.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { OffenderModule } from './offender/offender.module';
     UserModule,
     SchoolModule,
     OffenderModule,
+    VehicleModule,
+    MemberModule,
   ],
   controllers: [AppController],
   providers: [AppService],
