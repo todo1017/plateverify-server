@@ -22,27 +22,27 @@ import { SchoolLogoDto } from './dto/school-logo.dto';
 export class SchoolController {
 
   constructor(
-    private pschoolService: SchoolService,
+    private schoolService: SchoolService,
   ) {}
 
   @Post('list')
   @Roles('plateverify', 'admin')
   public async list(@Response() res, @Body() body) {
-    const result = await this.pschoolService.findAll();
+    const result = await this.schoolService.findAll();
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('new')
   @Roles('plateverify', 'admin')
   public async new(@Response() res, @Body() schoolCreateDto: SchoolCreateDto) {
-    const result = await this.pschoolService.create(schoolCreateDto);
+    const result = await this.schoolService.create(schoolCreateDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('update')
   @Roles('plateverify', 'admin')
   public async update(@Response() res, @Body() schoolUpdateDto: SchoolUpdateDto) {
-    const result = await this.pschoolService.update(schoolUpdateDto);
+    const result = await this.schoolService.update(schoolUpdateDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
@@ -50,7 +50,7 @@ export class SchoolController {
   @Roles('plateverify', 'admin')
   @UseInterceptors(FileInterceptor('file'))
   public async logo(@Response() res, @Body() body, @UploadedFile() file) {
-    const result = await this.pschoolService.uploadLogo({
+    const result = await this.schoolService.uploadLogo({
       id: body.id,
       buffer: file.buffer,
       ext: file.mimetype.split('/')[1]

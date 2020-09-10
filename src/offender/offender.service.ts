@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { Offender } from './offender.entity';
-import { OffenderImportDto } from "./dto/import.dto";
+import { OffenderImportDto } from "./dto/offender-import.dto";
 
 @Injectable()
 export class OffenderService {

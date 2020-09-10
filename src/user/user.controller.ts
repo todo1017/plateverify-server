@@ -10,9 +10,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
 import { UserService } from './user.service';
-import { UserCreateDto } from './dto/create.dto';
-import { UserActivateDto } from './dto/activate.dto';
-import { UserRemoveDto } from './dto/remove.dto';
+import { UserCreateDto } from './dto/user-create.dto';
+import { UserActivateDto } from './dto/user-activate.dto';
+import { UserRemoveDto } from './dto/user-remove.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RoleGuard)

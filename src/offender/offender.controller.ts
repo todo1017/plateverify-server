@@ -15,8 +15,8 @@ import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
 import { OffenderService } from './offender.service';
 import { Offender } from './offender.entity';
-import { OffenderSearchDto } from './dto/search.dto';
-import { OffenderImportDto } from './dto/import.dto';
+import { OffenderSearchDto } from './dto/offender-search.dto';
+import { OffenderImportDto } from './dto/offender-import.dto';
 import * as Papa from 'papaparse';
 
 @Controller('offender')
