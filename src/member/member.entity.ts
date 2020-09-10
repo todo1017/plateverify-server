@@ -11,7 +11,6 @@ import {
 import { School } from 'src/school/school.entity';
 import { Vehicle } from 'src/vehicle/vehicle.entity';
 
-@Unique(['plate', 'school'])
 @Entity()
 export class Member {
   @PrimaryGeneratedColumn('uuid')

@@ -10,8 +10,8 @@ import {
 import { School } from 'src/school/school.entity';
 import { Member } from 'src/member/member.entity';
 
-@Unique(['plate', 'school'])
 @Entity()
+@Unique(['plate', 'school'])
 export class Vehicle {
   @PrimaryGeneratedColumn('uuid')
   id: string;
