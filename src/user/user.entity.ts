@@ -8,7 +8,7 @@ import {
   ManyToOne
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { School } from "./school.entity";
+import { School } from "../school/school.entity";
 
 @Entity()
 export class User {

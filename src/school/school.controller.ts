@@ -3,13 +3,8 @@ import {
   UseGuards,
   HttpStatus,
   Response,
-  // Request,
-  // Get,
   Post,
   Body,
-  // Put,
-  // Param,
-  // Delete,
   UploadedFile,
   UseInterceptors
 } from '@nestjs/common';
@@ -22,7 +17,7 @@ import { SchoolCreateDto } from './dto/school-create.dto';
 import { SchoolUpdateDto } from './dto/school-update.dto';
 import { SchoolLogoDto } from './dto/school-logo.dto';
 
-@Controller('p/school')
+@Controller('school')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
 export class SchoolController {
 
@@ -61,7 +56,6 @@ export class SchoolController {
       ext: file.mimetype.split('/')[1]
     });
     return res.status(HttpStatus.OK).json(result);
-    return res.status(HttpStatus.OK).json(file);
   }
 
 }

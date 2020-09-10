@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/entities/user.entity';
+import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -46,8 +46,7 @@ export class AuthService {
       email: "admin@plateverify.com",
       password: "plateverify4k",
       active: true,
-      roles: ["plateverify", "admin"],
-      school: ''
+      roles: ["plateverify", "admin"]
     };
     return await this.userService.create(superadmin);
   }

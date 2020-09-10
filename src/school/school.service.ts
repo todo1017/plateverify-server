@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Repository, DeleteResult } from 'typeorm';
 import slugify from "slugify";
 import { S3 } from 'aws-sdk';
-import { School } from 'src/entities/school.entity';
+import { School } from './school.entity';
 import { SchoolCreateDto } from "./dto/school-create.dto";
 import { SchoolUpdateDto } from "./dto/school-update.dto";
 import { SchoolLogoDto } from "./dto/school-logo.dto";
