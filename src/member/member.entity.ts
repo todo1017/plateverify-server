@@ -26,6 +26,9 @@ export class Member {
   address: string;
 
   @Column()
+  group: string;
+
+  @Column()
   email: string;
 
   @Column()
