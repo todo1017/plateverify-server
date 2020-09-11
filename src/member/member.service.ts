@@ -7,6 +7,7 @@ import { Member } from './member.entity';
 import { MemberImportDto } from "./dto/member-import.dto";
 import { MemberCreateDto } from "./dto/member-create.dto";
 import { MemberUpdateDto } from "./dto/member-update.dto";
+import * as Papa from 'papaparse';
 
 @Injectable()
 export class MemberService {
@@ -21,27 +22,45 @@ export class MemberService {
     return paginate<Member>(this.memberRepository, options);
   }
 
-  public async import(memberImportDto: MemberImportDto, data: any): Promise<boolean> {
-    try {
-      const member = await this.memberRepository.create({
-        first_name : data[memberImportDto.first_name],
-        last_name  : data[memberImportDto.last_name],
-        address    : data[memberImportDto.address],
-        group      : data[memberImportDto.group],
-        email      : data[memberImportDto.email],
-        phone      : data[memberImportDto.phone],
-        grade      : data[memberImportDto.grade],
-        graduation : data[memberImportDto.graduation],
-      });
-      await this.memberRepository.save(member);
-    } catch (error) {
-      return false;
+  public async import(memberImportDto: MemberImportDto, file: any, group: string): Promise<any> {
+
+    if (file.mimetype !== 'text/csv') {
+      return {
+        success: false,
+        message: 'Not CSV file'
+      };
     }
-    return true;
+
+    const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
+    const failedRows = [];
+
+    for (const key in result.data) {
+      let data = result.data[key];
+      try {
+        const member = await this.memberRepository.create({
+          first_name : data[memberImportDto.first_name],
+          last_name  : data[memberImportDto.last_name],
+          address    : data[memberImportDto.address],
+          email      : data[memberImportDto.email],
+          phone      : data[memberImportDto.phone],
+          grade      : data[memberImportDto.grade],
+          graduation : data[memberImportDto.graduation],
+          group
+        });
+        await this.memberRepository.save(member);
+      } catch (error) {
+        failedRows.push({...data, key});
+      }
+    }
+    
+    return {
+      success: true,
+      failedRows
+    };
   }
 
-  public async create(memberCreateDto: MemberCreateDto): Promise<Member> {
-    let member = await this.memberRepository.create(memberCreateDto);
+  public async create(memberCreateDto: MemberCreateDto, group: string): Promise<Member> {
+    let member = await this.memberRepository.create({...memberCreateDto, group});
     // member = await this.memberRepository.save(member);
 
     // for (const key in memberCreateDto.old_vehicles) {

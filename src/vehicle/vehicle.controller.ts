@@ -13,6 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
+import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
 import { VehicleService } from './vehicle.service';
 import { Vehicle } from './vehicle.entity';
 import { VehicleSearchDto } from './dto/vehicle-search.dto';
@@ -28,14 +29,14 @@ export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Post('search')
-  @Roles('school', 'admin')
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async search(@Response() res, @Body() vehicleSearchDto: VehicleSearchDto): Promise<Pagination<Vehicle>> {
     const result = await this.vehicleService.paginate(vehicleSearchDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('parse')
-  @Roles('school', 'admin')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
   public async parse(@Response() res, @UploadedFile() file) {
     if (file.mimetype !== 'text/csv') {
@@ -57,7 +58,7 @@ export class VehicleController {
   }
 
   @Post('import')
-  @Roles('school', 'admin')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
   public async import(
     @Response() res,
@@ -89,14 +90,14 @@ export class VehicleController {
   }
 
   @Post('new')
-  @Roles('school', 'admin')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   public async new(@Response() res, @Body() vehicleCreateDto: VehicleCreateDto) {
     const result = await this.vehicleService.create(vehicleCreateDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('update')
-  @Roles('school', 'admin')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   public async update(@Response() res, @Body() vehicleUpdateDto: VehicleUpdateDto) {
     const result = await this.vehicleService.update(vehicleUpdateDto);
     return res.status(HttpStatus.OK).json(result);

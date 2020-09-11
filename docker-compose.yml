@@ -11,7 +11,7 @@ services:
     links:
       - "database:database"
     ports:
-      - 4001:3000
+      - 8002:3000
     volumes:
       - .:/app
       - /app/node_modules

@@ -40,11 +40,11 @@ export class Member {
   @Column()
   graduation: string;
 
-  @Column()
-  driver_license: string;
+  @Column({nullable: true, type: 'varchar'})
+  driver_license: string | null;
 
-  @Column()
-  tag: string;
+  @Column({nullable: true, type: 'varchar'})
+  tag: string | null;
 
   @ManyToOne(type => School, school => school.users)
   school: School;
