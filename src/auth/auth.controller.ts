@@ -1,10 +1,13 @@
 import {
   Controller,
+  UseGuards,
   HttpStatus,
   Response,
+  Request,
   Post,
   Body,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 
@@ -29,6 +32,20 @@ export class AuthController {
       const token = this.authService.createToken(loginDto);
       return res.status(HttpStatus.OK).json(token);
     }
+  }
+
+  @Post('check')
+  @UseGuards(AuthGuard('jwt'))
+  public async check(
+    @Response() res,
+    @Request() req
+  ) {
+    return res.status(HttpStatus.OK).json({
+      name: req.user.name,
+      email: req.user.email,
+      active: req.user.active,
+      roles: req.user.roles
+    });
   }
 
   @Post('seed')
