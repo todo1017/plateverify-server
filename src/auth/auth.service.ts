@@ -26,15 +26,19 @@ export class AuthService {
   //   return status;
   // }
 
-  async checkUser(loginDto: LoginDto): Promise<boolean> {
+  async checkUser(loginDto: LoginDto): Promise<any> {
     const user = await this.userService.findByEmail(loginDto.email);
-    return user && user.comparePassword(loginDto.password);
+    if (user && user.comparePassword(loginDto.password)) {
+      return {
+        success: true,
+        user
+      }
+    }
+    return { success: false };
   }
 
   createToken(user: any) {
-    return {
-      accessToken : this.jwtService.sign(user)
-    };
+    return this.jwtService.sign(user);
   }
 
   async checkToken(payload: any): Promise<User> {
