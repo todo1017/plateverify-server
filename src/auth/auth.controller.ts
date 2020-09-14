@@ -32,7 +32,12 @@ export class AuthController {
       const token = this.authService.createToken(loginDto);
       return res.status(HttpStatus.OK).json({
         token,
-        user: result.user
+        user: {
+          name: result.user.name,
+          email: result.user.email,
+          active: result.user.active,
+          roles: result.user.roles
+        }
       });
     }
   }
