@@ -24,21 +24,14 @@ export class AuthController {
     @Body() loginDto: LoginDto
   ) {
     const result = await this.authService.checkUser(loginDto);
+    
     if (!result.success) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'User Not Found',
+      res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Login Failed',
       });
     } else {
       const token = this.authService.createToken(loginDto);
-      return res.status(HttpStatus.OK).json({
-        token,
-        user: {
-          name: result.user.name,
-          email: result.user.email,
-          active: result.user.active,
-          roles: result.user.roles
-        }
-      });
+      return res.status(HttpStatus.OK).json({ token });
     }
   }
 

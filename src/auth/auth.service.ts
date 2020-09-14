@@ -28,12 +28,15 @@ export class AuthService {
 
   async checkUser(loginDto: LoginDto): Promise<any> {
     const user = await this.userService.findByEmail(loginDto.email);
-    if (user && user.comparePassword(loginDto.password)) {
+    const result = user && await user.comparePassword(loginDto.password);
+
+    if (result) {
       return {
         success: true,
         user
       }
     }
+
     return { success: false };
   }
 
