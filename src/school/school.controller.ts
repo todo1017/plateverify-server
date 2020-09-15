@@ -16,6 +16,7 @@ import { ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL } from 'src/constants/role.type
 import { SchoolService } from './school.service';
 import { SchoolCreateDto } from './dto/school-create.dto';
 import { SchoolUpdateDto } from './dto/school-update.dto';
+import { SchoolDetailDto } from './dto/school-detail.dto';
 
 @Controller('school')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -36,6 +37,13 @@ export class SchoolController {
   @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
   public async new(@Response() res, @Body() schoolCreateDto: SchoolCreateDto) {
     const result = await this.schoolService.create(schoolCreateDto);
+    return res.status(HttpStatus.OK).json(result);
+  }
+
+  @Post('detail')
+  @Roles(ROLE_SCOPE_PLATEVERIFY)
+  public async detail(@Response() res, @Body() schoolDetailDto: SchoolDetailDto) {
+    const result = await this.schoolService.findById(schoolDetailDto.id);
     return res.status(HttpStatus.OK).json(result);
   }
 
