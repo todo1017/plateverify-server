@@ -30,7 +30,7 @@ export class SchoolService {
     const school = await this.schoolRepository.create({
       ...schoolCreateDto,
       logo: '',
-      slug: slugify(schoolCreateDto.name)
+      slug: slugify(schoolCreateDto.name, { replacement: '_', lower: true })
     });
     return await this.schoolRepository.save(school);
   }
@@ -42,7 +42,7 @@ export class SchoolService {
     school = {
       ...school,
       ...schoolUpdateDto,
-      slug: slugify(schoolUpdateDto.name)
+      slug: slugify(schoolUpdateDto.name, { replacement: '_', lower: true })
     }
 
     return await this.schoolRepository.save(school);
@@ -70,6 +70,5 @@ export class SchoolService {
 
     return await this.schoolRepository.save(school);
   }
-
 
 }
