@@ -7,6 +7,7 @@ import { S3 } from 'aws-sdk';
 import { School } from './school.entity';
 import { SchoolCreateDto } from "./dto/school-create.dto";
 import { SchoolLogoDto } from "./dto/school-logo.dto";
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class SchoolService {
@@ -35,10 +36,11 @@ export class SchoolService {
   }
 
   public async update(data: any): Promise<School> {
-    await this.schoolRepository.findOneOrFail(data.id);
+    const school = await this.schoolRepository.findOneOrFail(data.id);
     return await this.schoolRepository.save({
       ...data,
-      slug: slugify(data.name, { replacement: '_', lower: true })
+      slug: slugify(data.name, { replacement: '_', lower: true }),
+      logo: data.logo? data.logo : school.logo
     });
   }
 
@@ -54,7 +56,7 @@ export class SchoolService {
     const result = await s3.upload({
       Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
       Body: schoolLogoDto.buffer,
-      Key: `logo-${school.slug}.${schoolLogoDto.ext}`
+      Key: `logo-${school.slug}-${uuidv4()}.${schoolLogoDto.ext}`
     }).promise();
 
     return result.Location;

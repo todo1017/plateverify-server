@@ -52,27 +52,31 @@ export class SchoolController {
   @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
   public async update(@Response() res, @Body() schoolUpdateDto: SchoolUpdateDto, @UploadedFile() file) {
-
-    let logo = '';
-
-    if (file) {
-      logo = await this.schoolService.uploadLogo({
-        id: schoolUpdateDto.id,
-        buffer: file.buffer,
-        ext: file.mimetype.split('/')[1]
+    try {
+      const cameras = JSON.parse(schoolUpdateDto.cameras).map(camera => ({
+        name: camera['name'],
+        slug: slugify(camera['name'], { replacement: '_', lower: true })
+      }));
+  
+      let logo = '';
+      if (file) {
+        logo = await this.schoolService.uploadLogo({
+          id: schoolUpdateDto.id,
+          buffer: file.buffer,
+          ext: file.mimetype.split('/')[1]
+        });
+      }
+      
+      const result = await this.schoolService.update({
+        ...schoolUpdateDto,
+        cameras,
+        logo
       });
+  
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
     }
-    
-    const cameras = schoolUpdateDto.cameras.map(camera => ({
-      name: camera['name'],
-      slug: slugify(camera['name'], { replacement: '_', lower: true })
-    }))
-    const result = await this.schoolService.update({
-      ...schoolUpdateDto,
-      logo,
-      cameras
-    });
-    return res.status(HttpStatus.OK).json(result);
   }
 
 }
