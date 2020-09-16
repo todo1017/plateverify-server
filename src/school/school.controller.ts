@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
+import slugify from "slugify";
 import { RoleGuard } from 'src/guard/role.guard';
 import { Roles } from 'src/guard/roles.decorator';
 import { ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL } from 'src/constants/role.type';
@@ -49,19 +50,27 @@ export class SchoolController {
 
   @Post('update')
   @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
-  public async update(@Response() res, @Body() schoolUpdateDto: SchoolUpdateDto) {
-    const result = await this.schoolService.update(schoolUpdateDto);
-    return res.status(HttpStatus.OK).json(result);
-  }
-
-  @Post('logo')
-  @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
-  public async logo(@Response() res, @Body() body, @UploadedFile() file) {
-    const result = await this.schoolService.uploadLogo({
-      id: body.id,
-      buffer: file.buffer,
-      ext: file.mimetype.split('/')[1]
+  public async update(@Response() res, @Body() schoolUpdateDto: SchoolUpdateDto, @UploadedFile() file) {
+
+    let logo = '';
+
+    if (file) {
+      logo = await this.schoolService.uploadLogo({
+        id: schoolUpdateDto.id,
+        buffer: file.buffer,
+        ext: file.mimetype.split('/')[1]
+      });
+    }
+    
+    const cameras = schoolUpdateDto.cameras.map(camera => ({
+      name: camera,
+      slug: slugify(camera, { replacement: '_', lower: true })
+    }))
+    const result = await this.schoolService.update({
+      ...schoolUpdateDto,
+      logo,
+      cameras
     });
     return res.status(HttpStatus.OK).json(result);
   }

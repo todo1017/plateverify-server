@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Repository, DeleteResult } from 'typeorm';
@@ -6,7 +6,6 @@ import slugify from "slugify";
 import { S3 } from 'aws-sdk';
 import { School } from './school.entity';
 import { SchoolCreateDto } from "./dto/school-create.dto";
-import { SchoolUpdateDto } from "./dto/school-update.dto";
 import { SchoolLogoDto } from "./dto/school-logo.dto";
 
 @Injectable()
@@ -35,14 +34,14 @@ export class SchoolService {
     return await this.schoolRepository.save(school);
   }
 
-  public async update(schoolUpdateDto: SchoolUpdateDto): Promise<School> {
+  public async update(data: any): Promise<School> {
 
-    let school = await this.schoolRepository.findOneOrFail(schoolUpdateDto.id);
+    let school = await this.schoolRepository.findOneOrFail(data.id);
 
     school = {
       ...school,
-      ...schoolUpdateDto,
-      slug: slugify(schoolUpdateDto.name, { replacement: '_', lower: true })
+      ...data,
+      slug: slugify(data.name, { replacement: '_', lower: true })
     }
 
     return await this.schoolRepository.save(school);
@@ -52,7 +51,7 @@ export class SchoolService {
     return await this.schoolRepository.delete(id);
   }
 
-  public async uploadLogo(schoolLogoDto: SchoolLogoDto): Promise<School> {
+  public async uploadLogo(schoolLogoDto: SchoolLogoDto): Promise<any> {
 
     let school = await this.schoolRepository.findOneOrFail(schoolLogoDto.id);
     
@@ -63,12 +62,7 @@ export class SchoolService {
       Key: `logo-${school.slug}.${schoolLogoDto.ext}`
     }).promise();
 
-    school = {
-      ...school,
-      logo: result.Location
-    };
-
-    return await this.schoolRepository.save(school);
+    return result.Location;
   }
 
 }

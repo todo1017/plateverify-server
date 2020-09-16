@@ -3,4 +3,5 @@ export class SchoolUpdateDto {
   name: string;
   live: string;
   timezone: number;
+  cameras: [];
 }
