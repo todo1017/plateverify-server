@@ -79,4 +79,15 @@ export class SchoolController {
     }
   }
 
+  @Post('remove')
+  @Roles(ROLE_SCOPE_PLATEVERIFY)
+  public async remove(@Response() res, @Body() schoolDetailDto: SchoolDetailDto) {
+    try {
+      const result = await this.schoolService.delete(schoolDetailDto.id);
+      return res.status(HttpStatus.OK).json(schoolDetailDto);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ error });
+    }
+  }
+
 }
