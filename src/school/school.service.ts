@@ -6,6 +6,7 @@ import slugify from "slugify";
 import { S3 } from 'aws-sdk';
 import { School } from './school.entity';
 import { SchoolCreateDto } from "./dto/school-create.dto";
+import { SchoolUpdateDto } from "./dto/school-update.dto";
 import { SchoolLogoDto } from "./dto/school-logo.dto";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -35,13 +36,15 @@ export class SchoolService {
     return await this.schoolRepository.save(school);
   }
 
-  public async update(data: any): Promise<School> {
-    const school = await this.schoolRepository.findOneOrFail(data.id);
-    return await this.schoolRepository.save({
-      ...data,
-      slug: slugify(data.name, { replacement: '_', lower: true }),
-      logo: data.logo? data.logo : school.logo
-    });
+  public async update(schoolUpdateDto: SchoolUpdateDto): Promise<School> {
+    const { id, name, logo } = schoolUpdateDto;
+    const school = await this.schoolRepository.findOneOrFail(id);
+    const updated = {
+      ...schoolUpdateDto,
+      slug: slugify(name, { replacement: '_', lower: true }),
+      logo: logo? logo : school.logo
+    };
+    return await this.schoolRepository.save(updated);
   }
 
   public async delete(id: string): Promise<DeleteResult> {

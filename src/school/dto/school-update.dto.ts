@@ -3,5 +3,6 @@ export class SchoolUpdateDto {
   name: string;
   live: string;
   timezone: number;
-  cameras: string;
+  cameras: any;
+  logo?: string;
 }
