@@ -16,7 +16,7 @@ import { UserCreateDto } from './dto/user-create.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserRemoveDto } from './dto/user-remove.dto';
 
-@Controller('users')
+@Controller('user')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
 export class UserController {
 
