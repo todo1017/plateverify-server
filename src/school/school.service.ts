@@ -20,7 +20,11 @@ export class SchoolService {
   ) {}
 
   public async findAll(): Promise<School[]> {
-    return await this.schoolRepository.find();
+    return await this.schoolRepository.find({
+      order: {
+        name: "ASC",
+      }
+    });
   }
 
   public async findById(id: string): Promise<School | null> {
