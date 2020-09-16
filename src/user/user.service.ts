@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { User } from './user.entity';
 import { UserCreateDto } from './dto/user-create.dto';
-import { UserActivateDto } from './dto/user-activate.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
 
 @Injectable()
 export class UserService {
@@ -28,25 +28,15 @@ export class UserService {
   public async create(userCreateDto: UserCreateDto): Promise<User> {
     let user = await this.usersRepository.findOne({ email: userCreateDto.email });
     if (user) {
-      throw new HttpException(
-        'User already exists',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
     user = await this.usersRepository.create(userCreateDto);
     return await this.usersRepository.save(user);
   }
 
-  public async activate(userActivateDto: UserActivateDto): Promise<User> {
-    let user = await this.usersRepository.findOne({id: userActivateDto.id});
-    if (!user) {
-      throw new HttpException(
-        'User not exist',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    user.active = userActivateDto.active;
-    
+  public async activate(userUpdateDto: UserUpdateDto): Promise<User> {
+    let user = await this.usersRepository.findOneOrFail({id: userUpdateDto.id});
+    user.active = userUpdateDto.active;
     return await this.usersRepository.save(user);
   }
 

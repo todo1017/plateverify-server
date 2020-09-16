@@ -12,7 +12,7 @@ import { Roles } from "src/guard/roles.decorator";
 import { ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL } from "src/constants/role.type";
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user-create.dto';
-import { UserActivateDto } from './dto/user-activate.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
 import { UserRemoveDto } from './dto/user-remove.dto';
 
 @Controller('users')
@@ -43,8 +43,8 @@ export class UserController {
 
   @Post('activate')
   @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
-  public async activate(@Response() res, @Body() userActivateDto: UserActivateDto) {
-    const result = await this.userService.activate(userActivateDto);
+  public async activate(@Response() res, @Body() userUpdateDto: UserUpdateDto) {
+    const result = await this.userService.activate(userUpdateDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
