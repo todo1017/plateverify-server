@@ -64,8 +64,8 @@ export class SchoolController {
     }
     
     const cameras = schoolUpdateDto.cameras.map(camera => ({
-      name: camera,
-      slug: slugify(camera, { replacement: '_', lower: true })
+      name: camera['name'],
+      slug: slugify(camera['name'], { replacement: '_', lower: true })
     }))
     const result = await this.schoolService.update({
       ...schoolUpdateDto,

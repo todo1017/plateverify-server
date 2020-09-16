@@ -35,16 +35,11 @@ export class SchoolService {
   }
 
   public async update(data: any): Promise<School> {
-
-    let school = await this.schoolRepository.findOneOrFail(data.id);
-
-    school = {
-      ...school,
+    await this.schoolRepository.findOneOrFail(data.id);
+    return await this.schoolRepository.save({
       ...data,
       slug: slugify(data.name, { replacement: '_', lower: true })
-    }
-
-    return await this.schoolRepository.save(school);
+    });
   }
 
   public async delete(id: string): Promise<DeleteResult> {
