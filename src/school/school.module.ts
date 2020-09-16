@@ -11,6 +11,7 @@ import { SchoolController } from './school.controller';
     UserModule
   ],
   providers: [SchoolService],
-  controllers: [SchoolController]
+  controllers: [SchoolController],
+  exports: [SchoolService],
 })
 export class SchoolModule {}
