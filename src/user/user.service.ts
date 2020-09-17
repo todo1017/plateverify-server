@@ -34,7 +34,7 @@ export class UserService {
     return await this.usersRepository.save(user);
   }
 
-  public async activate(userUpdateDto: UserUpdateDto): Promise<User> {
+  public async update(userUpdateDto: UserUpdateDto): Promise<User> {
     let user = await this.usersRepository.findOneOrFail({id: userUpdateDto.id});
     user.active = userUpdateDto.active;
     return await this.usersRepository.save(user);

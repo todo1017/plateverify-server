@@ -44,10 +44,10 @@ export class UserController {
     return res.status(HttpStatus.OK).json(result);
   }
 
-  @Post('activate')
+  @Post('update')
   @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
-  public async activate(@Response() res, @Body() userUpdateDto: UserUpdateDto) {
-    const result = await this.userService.activate(userUpdateDto);
+  public async update(@Response() res, @Body() userUpdateDto: UserUpdateDto) {
+    const result = await this.userService.update(userUpdateDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
