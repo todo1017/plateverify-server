@@ -33,6 +33,9 @@ export class User {
   @ManyToOne(type => School, school => school.users)
   school: School;
 
+  @Column('uuid', { nullable: true })
+  schoolId: string;
+
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
