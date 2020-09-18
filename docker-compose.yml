@@ -13,8 +13,8 @@ services:
     ports:
       - 8002:3000
     volumes:
-      - .:/app
-      - /app/node_modules
+      - '/app/node_modules'
+      - './:/app'
     networks:
       - plateverify_api_network
 
