@@ -25,7 +25,7 @@ export class RoleGuard implements CanActivate {
       }
     });
 
-    return user && user.roles && hasRole;
+    return user && user.roles && hasRole && user.active;
 
   }
 }
