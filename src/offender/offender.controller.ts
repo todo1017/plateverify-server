@@ -37,22 +37,13 @@ export class OffenderController {
   @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
   public async parse(@Response() res, @UploadedFile() file) {
-    if (file.mimetype !== 'text/csv') {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        success: false,
-        message: 'Not CSV file'
-      });
-    }
-
     const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
 
-    return res.status(HttpStatus.OK).json({
-      success: true,
-      result: {
-        data: result.data,
-        fields: result.meta.fields
-      }
-    });
+    if (!result) {
+      return res.status(HttpStatus.BAD_REQUEST).json({});
+    }
+    
+    return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('import')
@@ -64,16 +55,12 @@ export class OffenderController {
     @Body() offenderImportDto: OffenderImportDto
   ) {
 
-    if (file.mimetype !== 'text/csv') {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        success: false,
-        message: 'Not CSV file'
-      });
-    }
-
     const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
+    if (!result) {
+      return res.status(HttpStatus.BAD_REQUEST).json({});
+    }
+    
     let failedRows = [];
-
     for (const key in result.data) {
       let success = this.offenderService.create(offenderImportDto, result.data[key]);
       if (!success) {
@@ -82,7 +69,6 @@ export class OffenderController {
     }
 
     return res.status(HttpStatus.OK).json({
-      success: true,
       failedRows
     });
   }
