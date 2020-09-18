@@ -30,7 +30,7 @@ export class AuthService {
     const user = await this.userService.findByEmail(loginDto.email);
     const result = user && await user.comparePassword(loginDto.password);
 
-    if (result) {
+    if (result && user.active) {
       return {
         success: true,
         user
