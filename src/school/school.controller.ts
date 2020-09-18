@@ -54,8 +54,8 @@ export class SchoolController {
   public async update(@Response() res, @Body() schoolUpdateDto: SchoolUpdateDto, @UploadedFile() file) {
     try {
       const cameras = JSON.parse(schoolUpdateDto.cameras).map(camera => ({
-        name: camera,
-        slug: slugify(camera, { replacement: '_', lower: true })
+        ...camera,
+        slug: slugify(camera.name, { replacement: '_', lower: true }),
       }));
   
       let logo = '';
