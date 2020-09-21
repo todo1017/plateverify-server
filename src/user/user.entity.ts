@@ -5,7 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
-  ManyToOne
+  ManyToOne,
+  RelationId
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { School } from "../school/school.entity";
@@ -27,14 +28,14 @@ export class User {
   @Column({ default: false })
   active: boolean;
 
-  @Column({ type: 'jsonb', default: ['partner'] })
+  @Column({ type: 'jsonb', default: [] })
   roles: string[];
 
-  @ManyToOne(type => School, school => school.users)
+  @ManyToOne(type => School)
   school: School;
 
-  @Column('uuid', { nullable: true })
-  schoolId: string;
+  @RelationId((user: User) => user.school)
+  schoolId: number;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

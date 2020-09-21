@@ -40,30 +40,24 @@ export class MemberController {
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
   public async parse(@Response() res, @UploadedFile() file) {
-    if (file.mimetype !== 'text/csv') {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        success: false,
-        message: 'Not CSV file'
-      });
-    }
-
     const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
-
-    return res.status(HttpStatus.OK).json({
-      success: true,
-      result: {
-        data: result.data,
-        fields: result.meta.fields
-      }
-    });
+    if (result) {
+      return res.status(HttpStatus.OK).json(result);
+    } else {
+      return res.status(HttpStatus.BAD_REQUEST).json(result);
+    }
   }
 
   @Post('import_student')
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
   public async import_student(@Response() res, @UploadedFile() file, @Body() memberImportDto: MemberImportDto) {
-    let result = this.memberService.import(memberImportDto, file, MEMBER_TYPE_STUDENT);
-    return res.status(HttpStatus.OK).json(result);
+    const result = this.memberService.import(memberImportDto, file, MEMBER_TYPE_STUDENT);
+    if (result) {
+      return res.status(HttpStatus.OK).json(result);
+    } else {
+      return res.status(HttpStatus.BAD_REQUEST).json(result);
+    }
   }
 
   @Post('import_faculty')
@@ -71,7 +65,11 @@ export class MemberController {
   @UseInterceptors(FileInterceptor('file'))
   public async import_faculty(@Response() res, @UploadedFile() file, @Body() memberImportDto: MemberImportDto) {
     let result = this.memberService.import(memberImportDto, file, MEMBER_TYPE_FACULTY);
-    return res.status(HttpStatus.OK).json(result);
+    if (result) {
+      return res.status(HttpStatus.OK).json(result);
+    } else {
+      return res.status(HttpStatus.BAD_REQUEST).json(result);
+    }
   }
 
   @Post('new_student')
