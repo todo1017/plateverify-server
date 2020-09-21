@@ -35,7 +35,7 @@ export class User {
   school: School;
 
   @RelationId((user: User) => user.school)
-  schoolId: number;
+  schoolId: string;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

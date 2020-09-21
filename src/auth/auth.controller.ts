@@ -24,7 +24,7 @@ export class AuthController {
     @Body() loginDto: LoginDto
   ) {
     const result = await this.authService.checkUser(loginDto);
-    
+
     if (!result.success) {
       res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Login Failed',
@@ -45,7 +45,13 @@ export class AuthController {
       name: req.user.name,
       email: req.user.email,
       active: req.user.active,
-      roles: req.user.roles
+      roles: req.user.roles,
+      school: {
+        name: req.user.school.name,
+        slug: req.user.school.slug,
+        logo: req.user.school.logo,
+        live: req.user.school.live,
+      }
     });
   }
 
