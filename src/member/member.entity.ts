@@ -6,12 +6,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  OneToMany
+  OneToMany,
+  RelationId
 } from 'typeorm';
 import { School } from 'src/school/school.entity';
 import { Vehicle } from 'src/vehicle/vehicle.entity';
 
 @Entity()
+@Unique(['first_name', 'last_name', 'group', 'email'])
 export class Member {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -48,6 +50,9 @@ export class Member {
 
   @ManyToOne(type => School, school => school.users)
   school: School;
+
+  @RelationId((member: Member) => member.school)
+  schoolId: string;
 
   @OneToMany(type => Vehicle, vehicle => vehicle.member)
   vehicles: Vehicle[];

@@ -16,10 +16,10 @@ import { Roles } from "src/guard/roles.decorator";
 import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
 import { VehicleService } from './vehicle.service';
 import { Vehicle } from './vehicle.entity';
-import { VehicleSearchDto } from './dto/vehicle-search.dto';
+import { VehicleListDto } from './dto/vehicle-list.dto';
 import { VehicleImportDto } from './dto/vehicle-import.dto';
-import { VehicleCreateDto } from './dto/vehicle-create.dto';
 import { VehicleUpdateDto } from './dto/vehicle-update.dto';
+import { VehicleRemoveDto } from './dto/vehicle-remove.dto';
 import * as Papa from 'papaparse';
 
 @Controller('vehicle')
@@ -28,10 +28,10 @@ export class VehicleController {
 
   constructor(private readonly vehicleService: VehicleService) {}
 
-  @Post('search')
+  @Post('list')
   @Roles(ROLE_SCOPE_SCHOOL)
-  public async search(@Response() res, @Body() vehicleSearchDto: VehicleSearchDto): Promise<Pagination<Vehicle>> {
-    const result = await this.vehicleService.paginate(vehicleSearchDto);
+  public async list(@Response() res, @Body() vehicleListDto: VehicleListDto): Promise<Pagination<Vehicle>> {
+    const result = await this.vehicleService.paginate(vehicleListDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
@@ -39,22 +39,12 @@ export class VehicleController {
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
   public async parse(@Response() res, @UploadedFile() file) {
-    if (file.mimetype !== 'text/csv') {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        success: false,
-        message: 'Not CSV file'
-      });
-    }
-
     const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
-
-    return res.status(HttpStatus.OK).json({
-      success: true,
-      result: {
-        data: result.data,
-        fields: result.meta.fields
-      }
-    });
+    if (result) {
+      return res.status(HttpStatus.OK).json(result);
+    } else {
+      return res.status(HttpStatus.BAD_REQUEST).json(result);
+    }
   }
 
   @Post('import')
@@ -65,14 +55,6 @@ export class VehicleController {
     @UploadedFile() file,
     @Body() vehicleImportDto: VehicleImportDto
   ) {
-
-    if (file.mimetype !== 'text/csv') {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        success: false,
-        message: 'Not CSV file'
-      });
-    }
-
     const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
     let failedRows = [];
 
@@ -89,17 +71,17 @@ export class VehicleController {
     });
   }
 
-  @Post('new')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
-  public async new(@Response() res, @Body() vehicleCreateDto: VehicleCreateDto) {
-    const result = await this.vehicleService.create(vehicleCreateDto);
-    return res.status(HttpStatus.OK).json(result);
-  }
-
   @Post('update')
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   public async update(@Response() res, @Body() vehicleUpdateDto: VehicleUpdateDto) {
     const result = await this.vehicleService.update(vehicleUpdateDto);
+    return res.status(HttpStatus.OK).json(result);
+  }
+
+  @Post('remove')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  public async remove(@Response() res, @Body() vehicleRemoveDto: VehicleRemoveDto) {
+    const result = await this.vehicleService.update(vehicleRemoveDto);
     return res.status(HttpStatus.OK).json(result);
   }
 

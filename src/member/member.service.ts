@@ -5,8 +5,8 @@ import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginat
 import { VehicleService } from 'src/vehicle/vehicle.service';
 import { Member } from './member.entity';
 import { MemberImportDto } from "./dto/member-import.dto";
-import { MemberCreateDto } from "./dto/member-create.dto";
 import { MemberUpdateDto } from "./dto/member-update.dto";
+import { MemberRemoveDto } from "./dto/member-remove.dto";
 import * as Papa from 'papaparse';
 
 @Injectable()
@@ -22,22 +22,15 @@ export class MemberService {
     return paginate<Member>(this.memberRepository, options);
   }
 
-  public async import(memberImportDto: MemberImportDto, file: any, group: string): Promise<any> {
-
-    if (file.mimetype !== 'text/csv') {
-      return {
-        success: false,
-        message: 'Not CSV file'
-      };
-    }
-
-    const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
+  public async import(memberImportDto: MemberImportDto, file: any): Promise<any> {
+    const result = Papa.parse(file.buffer.toString(), { header:true, skipEmptyLines:true });
     const failedRows = [];
 
     for (const key in result.data) {
       let data = result.data[key];
       try {
         const member = await this.memberRepository.create({
+          group      : data[memberImportDto.group],
           first_name : data[memberImportDto.first_name],
           last_name  : data[memberImportDto.last_name],
           address    : data[memberImportDto.address],
@@ -45,7 +38,6 @@ export class MemberService {
           phone      : data[memberImportDto.phone],
           grade      : data[memberImportDto.grade],
           graduation : data[memberImportDto.graduation],
-          group
         });
         await this.memberRepository.save(member);
       } catch (error) {
@@ -59,24 +51,6 @@ export class MemberService {
     };
   }
 
-  public async create(memberCreateDto: MemberCreateDto, group: string): Promise<Member> {
-    let member = await this.memberRepository.create({...memberCreateDto, group});
-    // member = await this.memberRepository.save(member);
-
-    // for (const key in memberCreateDto.old_vehicles) {
-    //   let id = memberCreateDto.old_vehicles[key];
-    //   this.vehicleService.update({
-    //     id,
-    //     member: member.id
-    //   })
-      
-    // }
-
-    return member;
-
-    
-  }
-
   public async update(memberUpdateDto: MemberUpdateDto): Promise<Member> {
     let member = await this.memberRepository.findOne({ id: memberUpdateDto.id });
     member = {
@@ -86,8 +60,8 @@ export class MemberService {
     return await this.memberRepository.save(member);
   }
 
-  public async remove(id: string): Promise<DeleteResult> {
-    return await this.memberRepository.delete(id);
+  public async remove(memberRemoveDto: MemberRemoveDto): Promise<DeleteResult> {
+    return await this.memberRepository.delete(memberRemoveDto.id);
   }
 
 }

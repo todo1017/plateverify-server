@@ -1,4 +1,4 @@
-export class VehicleSearchDto {
+export class MemberListDto {
   page: number;
   limit: number;
 }

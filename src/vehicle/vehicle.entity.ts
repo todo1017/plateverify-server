@@ -5,7 +5,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne
+  ManyToOne,
+  RelationId
 } from 'typeorm';
 import { School } from 'src/school/school.entity';
 import { Member } from 'src/member/member.entity';
@@ -43,11 +44,17 @@ export class Vehicle {
   @Column({ type: 'jsonb', default: ['partner'] })
   roles: string[];
 
-  @ManyToOne(type => School, school => school.users)
+  @ManyToOne(type => School)
   school: School;
 
-  @ManyToOne(type => Member, member => member.vehicles)
+  @RelationId((vehicle: Vehicle) => vehicle.school)
+  schoolId: string;
+
+  @ManyToOne(type => Member)
   member: Member;
+
+  @RelationId((vehicle: Vehicle) => vehicle.member)
+  memberId: string;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

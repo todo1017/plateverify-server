@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
-import { ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL } from "src/constants/role.type";
+import { ROLE_SCOPE_PLATEVERIFY, ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
 import { OffenderService } from './offender.service';
 import { Offender } from './offender.entity';
 import { OffenderSearchDto } from './dto/offender-search.dto';
@@ -28,7 +28,7 @@ export class OffenderController {
 
   @Post('search')
   @Roles(ROLE_SCOPE_PLATEVERIFY)
-  public async index(@Response() res, @Body() offenderSearchDto: OffenderSearchDto): Promise<Pagination<Offender>> {
+  public async search(@Response() res, @Body() offenderSearchDto: OffenderSearchDto): Promise<Pagination<Offender>> {
     const result = await this.offenderService.paginate(offenderSearchDto);
     return res.status(HttpStatus.OK).json(result);
   }
@@ -71,6 +71,15 @@ export class OffenderController {
     return res.status(HttpStatus.OK).json({
       failedRows
     });
+  }
+
+  // school section
+
+  @Post('list')
+  @Roles(ROLE_SCOPE_SCHOOL)
+  public async index(@Response() res, @Body() offenderSearchDto: OffenderSearchDto): Promise<Pagination<Offender>> {
+    const result = await this.offenderService.paginate(offenderSearchDto);
+    return res.status(HttpStatus.OK).json(result);
   }
 
 }

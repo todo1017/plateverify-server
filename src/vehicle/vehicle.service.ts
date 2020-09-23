@@ -4,8 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { Vehicle } from './vehicle.entity';
 import { VehicleImportDto } from "./dto/vehicle-import.dto";
-import { VehicleCreateDto } from "./dto/vehicle-create.dto";
 import { VehicleUpdateDto } from "./dto/vehicle-update.dto";
+import { VehicleRemoveDto } from "./dto/vehicle-remove.dto";
 
 @Injectable()
 export class VehicleService {
@@ -35,11 +35,6 @@ export class VehicleService {
     return true;
   }
 
-  public async create(vehicleCreateDto: VehicleCreateDto): Promise<Vehicle> {
-    const vehicle = await this.vehicleRepository.create(vehicleCreateDto);
-    return await this.vehicleRepository.save(vehicle);
-  }
-
   public async update(vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
     let vehicle = await this.vehicleRepository.findOne({ id: vehicleUpdateDto.id });
     vehicle = {
@@ -49,8 +44,8 @@ export class VehicleService {
     return await this.vehicleRepository.save(vehicle);
   }
 
-  public async remove(id: string): Promise<DeleteResult> {
-    return await this.vehicleRepository.delete(id);
+  public async remove(vehicleRemoveDto: VehicleRemoveDto): Promise<DeleteResult> {
+    return await this.vehicleRepository.delete(vehicleRemoveDto.id);
   }
 
 }

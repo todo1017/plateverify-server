@@ -5,5 +5,5 @@ export class VehicleUpdateDto {
   model?: string;
   body?: string;
   color?: string;
-  member?: any;
+  memberId?: any;
 }

@@ -9,6 +9,7 @@ import { SchoolModule } from './school/school.module';
 import { OffenderModule } from './offender/offender.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { MemberModule } from './member/member.module';
+import { SettingModule } from './setting/setting.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MemberModule } from './member/member.module';
     OffenderModule,
     VehicleModule,
     MemberModule,
+    SettingModule
   ],
   controllers: [AppController],
   providers: [AppService],
