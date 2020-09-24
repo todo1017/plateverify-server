@@ -19,6 +19,7 @@ import { MemberService } from './member.service';
 import { Member } from './member.entity';
 import { MemberListDto } from './dto/member-list.dto';
 import { MemberImportDto } from './dto/member-import.dto';
+import { MemberViewDto } from './dto/member-view.dto';
 import { MemberUpdateDto } from './dto/member-update.dto';
 import { MemberRemoveDto } from './dto/member-remove.dto';
 
@@ -31,7 +32,13 @@ export class MemberController {
   @Post('list')
   @Roles(ROLE_SCOPE_SCHOOL)
   public async list(@Response() res, @Body() memberListDto: MemberListDto): Promise<Pagination<Member>> {
-    const result = await this.memberService.paginate(memberListDto);
+    const result = await this.memberService.paginate(
+      {
+        page: memberListDto.page,
+        limit: memberListDto.limit
+      },
+      memberListDto.group
+    );
     return res.status(HttpStatus.OK).json(result);
   }
 
@@ -51,12 +58,19 @@ export class MemberController {
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
   public async import_student(@Response() res, @UploadedFile() file, @Body() memberImportDto: MemberImportDto) {
-    const result = this.memberService.import(memberImportDto, file);
+    const result = await this.memberService.import(memberImportDto, file);
     if (result) {
       return res.status(HttpStatus.OK).json(result);
     } else {
       return res.status(HttpStatus.BAD_REQUEST).json(result);
     }
+  }
+
+  @Post('view')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  public async view(@Response() res, @Body() memberViewDto: MemberViewDto) {
+    const result = await this.memberService.view(memberViewDto);
+    return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('update')

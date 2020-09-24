@@ -50,7 +50,7 @@ export class Vehicle {
   @RelationId((vehicle: Vehicle) => vehicle.school)
   schoolId: string;
 
-  @ManyToOne(type => Member)
+  @ManyToOne(type => Member, member => member.vehicles)
   member: Member;
 
   @RelationId((vehicle: Vehicle) => vehicle.member)

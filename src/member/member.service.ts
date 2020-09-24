@@ -5,6 +5,7 @@ import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginat
 import { VehicleService } from 'src/vehicle/vehicle.service';
 import { Member } from './member.entity';
 import { MemberImportDto } from "./dto/member-import.dto";
+import { MemberViewDto } from './dto/member-view.dto';
 import { MemberUpdateDto } from "./dto/member-update.dto";
 import { MemberRemoveDto } from "./dto/member-remove.dto";
 import * as Papa from 'papaparse';
@@ -17,14 +18,24 @@ export class MemberService {
     private readonly memberRepository: Repository<Member>,
     private readonly vehicleService: VehicleService
   ) {}
- 
-  public async paginate(options: IPaginationOptions): Promise<Pagination<Member>> {
-    return paginate<Member>(this.memberRepository, options);
+
+  public async paginate(options: IPaginationOptions, group: string): Promise<Pagination<Member>> {
+    if (group !== 'all') {
+      return paginate<Member>(this.memberRepository, options, {
+        where: {
+          group
+        },
+        relations: ['vehicles'],
+      });
+    }
+    return paginate<Member>(this.memberRepository, options, {
+      relations: ['vehicles'],
+    });
   }
 
   public async import(memberImportDto: MemberImportDto, file: any): Promise<any> {
     const result = Papa.parse(file.buffer.toString(), { header:true, skipEmptyLines:true });
-    const failedRows = [];
+    const failed = [];
 
     for (const key in result.data) {
       let data = result.data[key];
@@ -41,14 +52,22 @@ export class MemberService {
         });
         await this.memberRepository.save(member);
       } catch (error) {
-        failedRows.push({...data, key});
+        failed.push({
+          ...data,
+          key,
+          error: {
+            message: error.message
+          }
+        });
       }
     }
-    
-    return {
-      success: true,
-      failedRows
-    };
+
+    return { failed };
+  }
+
+  public async view(memberViewDto: MemberViewDto): Promise<Member> {
+    const member = await this.memberRepository.findOne({ id: memberViewDto.id });
+    return member;
   }
 
   public async update(memberUpdateDto: MemberUpdateDto): Promise<Member> {
