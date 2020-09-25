@@ -45,16 +45,12 @@ export class Vehicle {
   roles: string[];
 
   @ManyToOne(type => School)
+  @RelationId((vehicle: Vehicle) => vehicle.school)
   school: School;
 
-  @RelationId((vehicle: Vehicle) => vehicle.school)
-  schoolId: string;
-
   @ManyToOne(type => Member, member => member.vehicles)
-  member: Member;
-
   @RelationId((vehicle: Vehicle) => vehicle.member)
-  memberId: string;
+  member: Member;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

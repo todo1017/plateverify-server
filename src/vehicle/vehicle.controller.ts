@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Post,
   Response,
+  Request,
   Body,
   UploadedFile,
   UseInterceptors
@@ -18,6 +19,7 @@ import { VehicleService } from './vehicle.service';
 import { Vehicle } from './vehicle.entity';
 import { VehicleListDto } from './dto/vehicle-list.dto';
 import { VehicleImportDto } from './dto/vehicle-import.dto';
+import { VehicleViewDto } from './dto/vehicle-view.dto';
 import { VehicleUpdateDto } from './dto/vehicle-update.dto';
 import { VehicleRemoveDto } from './dto/vehicle-remove.dto';
 import * as Papa from 'papaparse';
@@ -30,7 +32,11 @@ export class VehicleController {
 
   @Post('list')
   @Roles(ROLE_SCOPE_SCHOOL)
-  public async list(@Response() res, @Body() vehicleListDto: VehicleListDto): Promise<Pagination<Vehicle>> {
+  public async list(
+    @Response() res,
+    @Request() req,
+    @Body() vehicleListDto: VehicleListDto
+  ): Promise<Pagination<Vehicle>> {
     const result = await this.vehicleService.paginate(vehicleListDto);
     return res.status(HttpStatus.OK).json(result);
   }
@@ -52,6 +58,7 @@ export class VehicleController {
   @UseInterceptors(FileInterceptor('file'))
   public async import(
     @Response() res,
+    @Request() req,
     @UploadedFile() file,
     @Body() vehicleImportDto: VehicleImportDto
   ) {
@@ -69,6 +76,13 @@ export class VehicleController {
       success: true,
       failedRows
     });
+  }
+
+  @Post('view')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  public async view(@Response() res, @Body() vehicleViewDto: VehicleViewDto) {
+    const result = await this.vehicleService.view(vehicleViewDto);
+    return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('update')
