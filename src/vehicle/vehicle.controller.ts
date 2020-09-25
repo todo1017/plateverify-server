@@ -37,7 +37,7 @@ export class VehicleController {
     @Request() req,
     @Body() vehicleListDto: VehicleListDto
   ): Promise<Pagination<Vehicle>> {
-    const result = await this.vehicleService.paginate(vehicleListDto);
+    const result = await this.vehicleService.paginate(vehicleListDto, req.user.schoolId);
     return res.status(HttpStatus.OK).json(result);
   }
 
@@ -62,20 +62,12 @@ export class VehicleController {
     @UploadedFile() file,
     @Body() vehicleImportDto: VehicleImportDto
   ) {
-    const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
-    let failedRows = [];
-
-    for (const key in result.data) {
-      let success = this.vehicleService.import(vehicleImportDto, result.data[key]);
-      if (!success) {
-        failedRows.push(result.data[key]);
-      }
+    const result = await this.vehicleService.import(vehicleImportDto, file, req.user.schoolId);
+    if (result) {
+      return res.status(HttpStatus.OK).json(result);
+    } else {
+      return res.status(HttpStatus.BAD_REQUEST).json(result);
     }
-
-    return res.status(HttpStatus.OK).json({
-      success: true,
-      failedRows
-    });
   }
 
   @Post('view')

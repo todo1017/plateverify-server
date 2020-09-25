@@ -32,25 +32,28 @@ export class Vehicle {
   @Column()
   color: string;
 
-  @Column()
-  insurance: string;
+  @Column({nullable: true, type: 'varchar'})
+  insurance: string | null;
 
-  @Column()
-  registration: string;
+  @Column({nullable: true, type: 'varchar'})
+  registration: string | null;
 
-  @Column({ default: false })
-  status: string;
-
-  @Column({ type: 'jsonb', default: ['partner'] })
-  roles: string[];
+  @Column({nullable: true, type: 'varchar'})
+  status: string | null;
 
   @ManyToOne(type => School)
-  @RelationId((vehicle: Vehicle) => vehicle.school)
   school: School;
 
+  @Column()
+  @RelationId((member: Member) => member.school)
+  schoolId: string;
+
   @ManyToOne(type => Member, member => member.vehicles)
-  @RelationId((vehicle: Vehicle) => vehicle.member)
   member: Member;
+
+  @Column({nullable: true, type: 'varchar'})
+  @RelationId((vehicle: Vehicle) => vehicle.member)
+  memberId: string | null;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

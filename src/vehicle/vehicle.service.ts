@@ -7,6 +7,7 @@ import { VehicleImportDto } from "./dto/vehicle-import.dto";
 import { VehicleViewDto } from "./dto/vehicle-view.dto";
 import { VehicleUpdateDto } from "./dto/vehicle-update.dto";
 import { VehicleRemoveDto } from "./dto/vehicle-remove.dto";
+import * as Papa from 'papaparse';
 
 @Injectable()
 export class VehicleService {
@@ -16,24 +17,43 @@ export class VehicleService {
     private readonly vehicleRepository: Repository<Vehicle>,
   ) {}
 
-  public async paginate(options: IPaginationOptions): Promise<Pagination<Vehicle>> {
-    return paginate<Vehicle>(this.vehicleRepository, options);
+  public async paginate(options: IPaginationOptions, schoolId: string): Promise<Pagination<Vehicle>> {
+    return paginate<Vehicle>(this.vehicleRepository, options, {
+      relations: ['member'],
+      where: {
+        schoolId
+      }
+    });
   }
 
-  public async import(vehicleImportDto: VehicleImportDto, data: any): Promise<boolean> {
-    try {
-      const member = await this.vehicleRepository.create({
-        plate : data[vehicleImportDto.plate],
-        make  : data[vehicleImportDto.make],
-        model : data[vehicleImportDto.model],
-        body  : data[vehicleImportDto.body],
-        color : data[vehicleImportDto.color],
-      });
-      await this.vehicleRepository.save(member);
-    } catch (error) {
-      return false;
+  public async import(vehicleImportDto: VehicleImportDto, file: any, schoolId: string): Promise<any> {
+    const result = Papa.parse(file.buffer.toString(), { header:true, skipEmptyLines:true });
+    const failed = [];
+
+    for (const key in result.data) {
+      let data = result.data[key];
+      try {
+        const vehicle = await this.vehicleRepository.create({
+          plate : data[vehicleImportDto.plate],
+          make  : data[vehicleImportDto.make],
+          model : data[vehicleImportDto.model],
+          body  : data[vehicleImportDto.body],
+          color : data[vehicleImportDto.color],
+          schoolId
+        });
+        await this.vehicleRepository.save(vehicle);
+      } catch (error) {
+        failed.push({
+          ...data,
+          key,
+          error: {
+            message: error.message
+          }
+        });
+      }
     }
-    return true;
+
+    return { failed };
   }
 
   public async view(vehicleViewDto: VehicleViewDto): Promise<Vehicle> {
