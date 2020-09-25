@@ -13,7 +13,7 @@ import { Roles } from "src/guard/roles.decorator";
 import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
 import { SettingService } from './setting.service';
 import { Setting } from './setting.entity';
-import { SettingGetDto } from './dto/setting-get.dto';
+import { SettingStartDto } from './dto/setting-start.dto';
 import { SettingUpdateDto } from './dto/setting-update.dto';
 
 @Controller('setting')
@@ -22,14 +22,24 @@ export class SettingController {
 
   constructor(private readonly settingService: SettingService) {}
 
-  @Post('get')
+  @Post('start')
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
-  public async get(
+  public async start(
     @Response() res,
     @Request() req,
-    @Body() settingGetDto: SettingGetDto
+    @Body() settingStartDto: SettingStartDto
   ): Promise<Setting> {
-    const result = await this.settingService.find(settingGetDto.category, req.user.schoolId);
+    const result = await this.settingService.start(settingStartDto, req.user.schoolId);
+    return res.status(HttpStatus.OK).json(result);
+  }
+
+  @Post('all')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  public async all(
+    @Response() res,
+    @Request() req
+  ): Promise<Setting> {
+    const result = await this.settingService.find(req.user.schoolId);
     return res.status(HttpStatus.OK).json(result);
   }
 
@@ -40,8 +50,12 @@ export class SettingController {
     @Request() req,
     @Body() settingUpdateDto: SettingUpdateDto
   ): Promise<Setting> {
-    const result = await this.settingService.update(settingUpdateDto, req.user.schoolId);
-    return res.status(HttpStatus.OK).json(result);
+    try {
+      const result = await this.settingService.update(settingUpdateDto, req.user.schoolId);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
+    }
   }
 
 }

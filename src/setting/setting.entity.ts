@@ -19,6 +19,7 @@ export class Setting {
   @ManyToOne(type => School)
   school: School;
 
+  @Column()
   @RelationId((setting: Setting) => setting.school)
   schoolId: string;
 
