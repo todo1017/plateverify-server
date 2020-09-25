@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Post,
   Response,
+  Request,
   Body,
   UploadedFile,
   UseInterceptors
@@ -31,13 +32,18 @@ export class MemberController {
 
   @Post('list')
   @Roles(ROLE_SCOPE_SCHOOL)
-  public async list(@Response() res, @Body() memberListDto: MemberListDto): Promise<Pagination<Member>> {
+  public async list(
+    @Response() res,
+    @Request() req,
+    @Body() memberListDto: MemberListDto
+  ): Promise<Pagination<Member>> {
     const result = await this.memberService.paginate(
       {
         page: memberListDto.page,
         limit: memberListDto.limit
       },
-      memberListDto.group
+      memberListDto.group,
+      req.user.schoolId
     );
     return res.status(HttpStatus.OK).json(result);
   }
@@ -57,8 +63,13 @@ export class MemberController {
   @Post('import')
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   @UseInterceptors(FileInterceptor('file'))
-  public async import_student(@Response() res, @UploadedFile() file, @Body() memberImportDto: MemberImportDto) {
-    const result = await this.memberService.import(memberImportDto, file);
+  public async import_student(
+    @Response() res,
+    @Request() req,
+    @UploadedFile() file,
+    @Body() memberImportDto: MemberImportDto
+  ) {
+    const result = await this.memberService.import(memberImportDto, file, req.user.schoolId);
     if (result) {
       return res.status(HttpStatus.OK).json(result);
     } else {

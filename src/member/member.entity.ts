@@ -13,7 +13,7 @@ import { School } from 'src/school/school.entity';
 import { Vehicle } from 'src/vehicle/vehicle.entity';
 
 @Entity()
-@Unique(['first_name', 'last_name', 'group', 'email'])
+@Unique(['first_name', 'last_name', 'group', 'email', 'schoolId'])
 export class Member {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -48,9 +48,10 @@ export class Member {
   @Column({nullable: true, type: 'varchar'})
   tag: string | null;
 
-  @ManyToOne(type => School, school => school.users)
+  @ManyToOne(type => School)
   school: School;
 
+  @Column()
   @RelationId((member: Member) => member.school)
   schoolId: string;
 

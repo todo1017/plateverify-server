@@ -19,21 +19,25 @@ export class MemberService {
     private readonly vehicleService: VehicleService
   ) {}
 
-  public async paginate(options: IPaginationOptions, group: string): Promise<Pagination<Member>> {
+  public async paginate(options: IPaginationOptions, group: string, schoolId: string): Promise<Pagination<Member>> {
     if (group !== 'all') {
       return paginate<Member>(this.memberRepository, options, {
         where: {
-          group
+          group,
+          schoolId
         },
         relations: ['vehicles'],
       });
     }
     return paginate<Member>(this.memberRepository, options, {
       relations: ['vehicles'],
+      where: {
+        schoolId
+      }
     });
   }
 
-  public async import(memberImportDto: MemberImportDto, file: any): Promise<any> {
+  public async import(memberImportDto: MemberImportDto, file: any, schoolId: string): Promise<any> {
     const result = Papa.parse(file.buffer.toString(), { header:true, skipEmptyLines:true });
     const failed = [];
 
@@ -49,6 +53,7 @@ export class MemberService {
           phone      : data[memberImportDto.phone],
           grade      : data[memberImportDto.grade],
           graduation : data[memberImportDto.graduation],
+          schoolId
         });
         await this.memberRepository.save(member);
       } catch (error) {
