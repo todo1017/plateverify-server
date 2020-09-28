@@ -6,10 +6,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   RelationId
 } from 'typeorm';
 import { School } from 'src/school/school.entity';
 import { Member } from 'src/member/member.entity';
+import { Record } from "src/record/record.entity";
 
 @Entity()
 @Unique(['plate', 'school'])
@@ -30,6 +32,9 @@ export class Vehicle {
   @Column({nullable: true, type: 'varchar'})
   @RelationId((vehicle: Vehicle) => vehicle.member)
   memberId: string | null;
+
+  @OneToMany(type => Record, record => record.vehicle)
+  records: Record[];
 
   @Column()
   plate: string;

@@ -5,13 +5,18 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
+import { Record } from "src/record/record.entity";
 
 @Entity()
 @Unique(["plate"])
 export class Offender {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @OneToMany(type => Record, record => record.offender)
+  records: Record[];
 
   @Column()
   name: string;

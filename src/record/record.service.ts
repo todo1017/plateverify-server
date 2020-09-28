@@ -7,6 +7,7 @@ import { SchoolService } from 'src/school/school.service';
 import { Record } from './record.entity';
 import { RecordSearchDto } from './dto/record-search.dto';
 import { RecordCreateDto } from "./dto/record-create.dto";
+import { RecordViewDto } from "./dto/record-view.dto";
 
 @Injectable()
 export class RecordService {
@@ -38,6 +39,10 @@ export class RecordService {
       return false;
     }
     return true;
+  }
+
+  public async view(recordViewDto: RecordViewDto): Promise<Record> {
+    return await this.recordRepository.findOneOrFail({ id: recordViewDto.id });
   }
 
 }
