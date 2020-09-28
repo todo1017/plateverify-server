@@ -21,13 +21,13 @@ export class RecordService {
     const school = await this.schoolService.findById(schoolId);
     const startDate = moment(recordSearchDto.startDate, 'YYYY-MM-DD hh:mm:ss').subtract(school.timezone, 'hour').toDate();
     const endDate = moment(recordSearchDto.endDate, 'YYYY-MM-DD hh:mm:ss').subtract(school.timezone, 'hour').toDate();
-    return paginate<Record>(this.recordRepository, options, {
-      // relations: ['vehicles'],
-      where: {
-        schoolId,
-        created_at: Between(startDate, endDate)
-      },
-    });
+
+    const queryBuilder = this.recordRepository.createQueryBuilder('c')
+      .where('c.schoolId = :id', {id: schoolId})
+      .where('c.created_at between :startDate and :endDate', {startDate, endDate})
+      .orderBy('c.created_at', 'DESC');
+
+    return paginate<Record>(queryBuilder, options);
   }
 
   public async create(recordCreateDto: RecordCreateDto): Promise<boolean> {
