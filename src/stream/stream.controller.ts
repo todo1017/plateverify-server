@@ -12,6 +12,7 @@ import {
 import { RecordService } from 'src/record/record.service';
 import { SchoolService } from 'src/school/school.service';
 import { VehicleService } from 'src/vehicle/vehicle.service';
+import { OffenderService } from 'src/offender/offender.service';
 
 @Controller('stream')
 export class StreamController {
@@ -20,10 +21,11 @@ export class StreamController {
     private readonly recordService: RecordService,
     private readonly schoolService: SchoolService,
     private readonly vehicleService: VehicleService,
+    private readonly offenderService: OffenderService,
   ) {}
 
   @Post('input')
-  public async list(
+  public async input(
     @Response() res,
     @Body() data: any
   ): Promise<any> {
@@ -31,12 +33,16 @@ export class StreamController {
 
     try {
       const schoolReg = await this.schoolService.findBySlug(agent);
+      const offenderReg = await this.offenderService.findByPlate(plate);
       const vehicleReg = await this.vehicleService.findByPlateSchool(plate, schoolReg.id);
 
       let visitorType = 'unknown';
       let visitorName = 'unknown';
-      if (vehicleReg && vehicleReg.member) {
-        visitorType = vehicleReg.member.group;
+      if (offenderReg) {
+        visitorType = 'offender';
+        visitorName = offenderReg.name;
+      } else if (vehicleReg && vehicleReg.member) {
+        visitorType = vehicleReg.flagged ? 'flagged' : vehicleReg.member.group;
         visitorName = vehicleReg.member.first_name + ' ' + vehicleReg.member.last_name;
       }
 
@@ -56,6 +62,7 @@ export class StreamController {
 
       this.recordService.create({
         schoolId: schoolReg.id,
+        offenderId: offenderReg ? offenderReg.id : null,
         vehicleId: vehicleReg ? vehicleReg.id : null,
         memberId: vehicleReg ? vehicleReg.memberId : null,
         meta: {
@@ -69,24 +76,10 @@ export class StreamController {
           vehicleColor: vehicle.color[0].name,
           photo: `https://cloud.openalpr.com/img/${agent_uid}/${best_uuid}?company_id=${company_id}`
         }
-      })
-      return res.status(HttpStatus.OK).json({
-        schoolId: schoolReg.id,
-        vehicleId: vehicleReg.id,
-        memberId: vehicleReg.memberId,
-        meta: {
-          visitorType,
-          visitorName,
-          plate,
-          location,
-          vehicleMake: vehicle.make[0].name,
-          vehicleMakeModel: vehicle.make_model[0].name,
-          vehicleBodyType: vehicle.body_type[0].name,
-          vehicleColor: vehicle.color[0].name,
-          photo: `https://cloud.openalpr.com/img/${agent_uid}/${best_uuid}?company_id=${company_id}`
-        }
-      }); 
+      });
+      return res.status(HttpStatus.OK).json({ success: true });
     } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
     }
   }
 

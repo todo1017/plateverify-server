@@ -12,6 +12,14 @@ export class OffenderService {
     @InjectRepository(Offender)
     private readonly offenderRepository: Repository<Offender>,
   ) {}
+
+  public async findByPlate(plate: string): Promise<Offender | null> {
+    return await this.offenderRepository.findOne({
+      where: {
+        plate: plate.toLowerCase(),
+      }
+    });
+  }
  
   public async paginate(options: IPaginationOptions): Promise<Pagination<Offender>> {
     return paginate<Offender>(this.offenderRepository, options);

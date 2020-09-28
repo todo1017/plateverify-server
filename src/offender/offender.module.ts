@@ -9,6 +9,7 @@ import { OffenderController } from './offender.controller';
     TypeOrmModule.forFeature([Offender]),
   ],
   providers: [OffenderService],
-  controllers: [OffenderController]
+  controllers: [OffenderController],
+  exports: [OffenderService]
 })
 export class OffenderModule {}

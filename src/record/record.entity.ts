@@ -10,6 +10,7 @@ import {
 import { School } from 'src/school/school.entity';
 import { Member } from 'src/member/member.entity';
 import { Vehicle } from 'src/vehicle/vehicle.entity';
+import { Offender } from 'src/offender/offender.entity';
 
 @Entity()
 export class Record {
@@ -36,6 +37,13 @@ export class Record {
   @Column({nullable: true, type: 'varchar'})
   @RelationId((record: Record) => record.vehicle)
   vehicleId: string | null;
+
+  @ManyToOne(type => Offender)
+  offender: Offender;
+
+  @Column({nullable: true, type: 'varchar'})
+  @RelationId((record: Record) => record.offender)
+  offenderId: string | null;
 
   @Column({ type: 'jsonb', default: {} })
   meta: any;
