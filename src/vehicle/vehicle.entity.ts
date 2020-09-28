@@ -17,6 +17,20 @@ export class Vehicle {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ManyToOne(type => School)
+  school: School;
+
+  @Column()
+  @RelationId((member: Member) => member.school)
+  schoolId: string;
+
+  @ManyToOne(type => Member, member => member.vehicles)
+  member: Member;
+
+  @Column({nullable: true, type: 'varchar'})
+  @RelationId((vehicle: Vehicle) => vehicle.member)
+  memberId: string | null;
+
   @Column()
   plate: string;
 
@@ -41,19 +55,11 @@ export class Vehicle {
   @Column({nullable: true, type: 'varchar'})
   status: string | null;
 
-  @ManyToOne(type => School)
-  school: School;
+  @Column({default: false})
+  flagged: boolean;
 
-  @Column()
-  @RelationId((member: Member) => member.school)
-  schoolId: string;
-
-  @ManyToOne(type => Member, member => member.vehicles)
-  member: Member;
-
-  @Column({nullable: true, type: 'varchar'})
-  @RelationId((vehicle: Vehicle) => vehicle.member)
-  memberId: string | null;
+  @Column({ type: 'jsonb', default: [] })
+  flags: any;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

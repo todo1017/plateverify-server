@@ -22,6 +22,7 @@ import { VehicleImportDto } from './dto/vehicle-import.dto';
 import { VehicleViewDto } from './dto/vehicle-view.dto';
 import { VehicleUpdateDto } from './dto/vehicle-update.dto';
 import { VehicleRemoveDto } from './dto/vehicle-remove.dto';
+import { VehicleFlagDto } from './dto/vehicle-flag.dto';
 import * as Papa from 'papaparse';
 
 @Controller('vehicle')
@@ -89,6 +90,28 @@ export class VehicleController {
   public async remove(@Response() res, @Body() vehicleRemoveDto: VehicleRemoveDto) {
     const result = await this.vehicleService.update(vehicleRemoveDto);
     return res.status(HttpStatus.OK).json(result);
+  }
+
+  @Post('flag')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  public async flag(@Response() res, @Body() vehicleFlagDto: VehicleFlagDto) {
+    try {
+      const result = await this.vehicleService.flag(vehicleFlagDto);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
+    }
+  }
+
+  @Post('unflag')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  public async unflag(@Response() res, @Body() vehicleViewDto: VehicleViewDto) {
+    try {
+      const result = await this.vehicleService.unflag(vehicleViewDto.id);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
+    }
   }
 
 }

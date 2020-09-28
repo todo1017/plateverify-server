@@ -7,7 +7,9 @@ import { VehicleImportDto } from "./dto/vehicle-import.dto";
 import { VehicleViewDto } from "./dto/vehicle-view.dto";
 import { VehicleUpdateDto } from "./dto/vehicle-update.dto";
 import { VehicleRemoveDto } from "./dto/vehicle-remove.dto";
+import { VehicleFlagDto } from "./dto/vehicle-flag.dto";
 import * as Papa from 'papaparse';
+import * as moment from "moment";
 
 @Injectable()
 export class VehicleService {
@@ -82,6 +84,39 @@ export class VehicleService {
 
   public async remove(vehicleRemoveDto: VehicleRemoveDto): Promise<DeleteResult> {
     return await this.vehicleRepository.delete(vehicleRemoveDto.id);
+  }
+
+  public async flag(vehicleFlagDto: VehicleFlagDto): Promise<Vehicle> {
+    let vehicle = await this.vehicleRepository.findOneOrFail({ id: vehicleFlagDto.id });
+    if (vehicle.flags.length) {
+      vehicle.flags[0].end = moment().format('YYYY-MM-DD hh:mm:s');
+    }
+    const flags = [
+      {
+        reason: vehicleFlagDto.reason,
+        expire: vehicleFlagDto.expire,
+        start: moment().format('YYYY-MM-DD hh:mm:s')
+      },
+      ...vehicle.flags
+    ]
+    vehicle = {
+      ...vehicle,
+      flagged: true,
+      flags
+    };
+    return await this.vehicleRepository.save(vehicle);
+  }
+
+  public async unflag(id: string): Promise<Vehicle> {
+    let vehicle = await this.vehicleRepository.findOneOrFail({ id });
+    if (vehicle.flags.length) {
+      vehicle.flags[0].end = moment().format('YYYY-MM-DD hh:mm:s');
+    }
+    vehicle = {
+      ...vehicle,
+      flagged: false,
+    };
+    return await this.vehicleRepository.save(vehicle);
   }
 
 }
