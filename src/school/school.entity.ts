@@ -29,7 +29,7 @@ export class School {
   timezone: number;
 
   @Column({ type: 'jsonb', default: [] })
-  cameras: [{name: string, slug: string}];
+  cameras: any;
 
   @OneToMany(type => User, user => user.school)
   users: User[];

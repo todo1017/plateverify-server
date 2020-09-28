@@ -10,6 +10,8 @@ import { OffenderModule } from './offender/offender.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { MemberModule } from './member/member.module';
 import { SettingModule } from './setting/setting.module';
+import { RecordModule } from './record/record.module';
+import { StreamModule } from './stream/stream.module';
 
 @Module({
   imports: [
@@ -23,7 +25,9 @@ import { SettingModule } from './setting/setting.module';
     OffenderModule,
     VehicleModule,
     MemberModule,
-    SettingModule
+    SettingModule,
+    RecordModule,
+    StreamModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -31,6 +31,10 @@ export class SchoolService {
     return await this.schoolRepository.findOneOrFail(id);
   }
 
+  public async findBySlug(slug: string): Promise<School | null> {
+    return await this.schoolRepository.findOneOrFail({ where: { slug }});
+  }
+
   public async create(schoolCreateDto: SchoolCreateDto): Promise<School> {
     const school = await this.schoolRepository.create({
       ...schoolCreateDto,

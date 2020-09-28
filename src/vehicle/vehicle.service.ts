@@ -17,6 +17,16 @@ export class VehicleService {
     private readonly vehicleRepository: Repository<Vehicle>,
   ) {}
 
+  public async findByPlateSchool(plate: string, schoolId: string): Promise<Vehicle | null> {
+    return await this.vehicleRepository.findOne({
+      where: {
+        plate: plate.toLowerCase(),
+        schoolId
+      },
+      relations: ["member"]
+    });
+  }
+
   public async paginate(options: IPaginationOptions, schoolId: string): Promise<Pagination<Vehicle>> {
     return paginate<Vehicle>(this.vehicleRepository, options, {
       relations: ['member'],
@@ -34,7 +44,7 @@ export class VehicleService {
       let data = result.data[key];
       try {
         const vehicle = await this.vehicleRepository.create({
-          plate : data[vehicleImportDto.plate],
+          plate : data[vehicleImportDto.plate].toLowerCase(),
           make  : data[vehicleImportDto.make],
           model : data[vehicleImportDto.model],
           body  : data[vehicleImportDto.body],
