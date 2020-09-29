@@ -12,30 +12,30 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
 import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
-import { RecordService } from './record.service';
-import { Record } from './record.entity';
-import { RecordSearchDto } from './dto/record-search.dto';
-import { RecordViewDto } from './dto/record-view.dto';
+import { Record } from 'src/record/record.entity';
+import { AlertService } from './alert.service';
+import { AlertSearchDto } from './dto/alert-search.dto';
+import { AlertViewDto } from './dto/alert-view.dto';
 
-@Controller('record')
+@Controller('alert')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
-export class RecordController {
-  
-  constructor(private readonly recordService: RecordService) {}
+export class AlertController {
+
+  constructor(private readonly alertService: AlertService) {}
 
   @Post('search')
   @Roles(ROLE_SCOPE_SCHOOL)
   public async search(
     @Response() res,
     @Request() req,
-    @Body() recordSearchDto: RecordSearchDto
+    @Body() alertSearchDto: AlertSearchDto
   ): Promise<Pagination<Record>>{
-    const result = await this.recordService.paginate(
+    const result = await this.alertService.paginate(
       {
-        page: recordSearchDto.page,
-        limit: recordSearchDto.limit
+        page: alertSearchDto.page,
+        limit: alertSearchDto.limit
       },
-      recordSearchDto,
+      alertSearchDto,
       req.user.schoolId
     );
     return res.status(HttpStatus.OK).json(result);
@@ -43,9 +43,9 @@ export class RecordController {
 
   @Post('view')
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
-  public async view(@Response() res, @Body() recordViewDto: RecordViewDto) {
+  public async view(@Response() res, @Body() alertViewDto: AlertViewDto) {
     try {
-      const result = await this.recordService.view(recordViewDto);
+      const result = await this.alertService.view(alertViewDto);
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({error});

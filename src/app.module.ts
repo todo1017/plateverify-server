@@ -12,6 +12,7 @@ import { MemberModule } from './member/member.module';
 import { SettingModule } from './setting/setting.module';
 import { RecordModule } from './record/record.module';
 import { StreamModule } from './stream/stream.module';
+import { AlertModule } from './alert/alert.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { StreamModule } from './stream/stream.module';
     MemberModule,
     SettingModule,
     RecordModule,
-    StreamModule
+    StreamModule,
+    AlertModule
   ],
   controllers: [AppController],
   providers: [AppService],
