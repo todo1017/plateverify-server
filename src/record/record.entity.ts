@@ -48,6 +48,9 @@ export class Record {
   @Column({ type: 'jsonb', default: {} })
   meta: any;
 
+  @Column()
+  plate: string;
+
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 

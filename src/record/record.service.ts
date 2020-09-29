@@ -41,8 +41,16 @@ export class RecordService {
     return true;
   }
 
-  public async view(recordViewDto: RecordViewDto): Promise<Record> {
-    return await this.recordRepository.findOneOrFail({ id: recordViewDto.id });
+  public async view(recordViewDto: RecordViewDto): Promise<any> {
+    const record = await this.recordRepository.findOneOrFail({ id: recordViewDto.id });
+    const visitHistory = await this.recordRepository.find({
+      schoolId: record.schoolId,
+      plate: record.plate
+    });
+    return {
+      ...record,
+      visitHistory
+    }
   }
 
 }

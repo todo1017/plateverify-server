@@ -65,11 +65,13 @@ export class StreamController {
         offenderId: offenderReg ? offenderReg.id : null,
         vehicleId: vehicleReg ? vehicleReg.id : null,
         memberId: vehicleReg ? vehicleReg.memberId : null,
+        plate,
         meta: {
           visitorType,
           visitorName,
           plate,
           location,
+          direction,
           vehicleMake: vehicle.make[0].name,
           vehicleMakeModel: vehicle.make_model[0].name,
           vehicleBodyType: vehicle.body_type[0].name,
