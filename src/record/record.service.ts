@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 import * as moment from 'moment';
 import { SchoolService } from 'src/school/school.service';
+import { VehicleService } from 'src/vehicle/vehicle.service';
 import { Record } from './record.entity';
 import { RecordSearchDto } from './dto/record-search.dto';
 import { RecordCreateDto } from "./dto/record-create.dto";
@@ -16,6 +17,7 @@ export class RecordService {
     @InjectRepository(Record)
     private readonly recordRepository: Repository<Record>,
     private schoolService: SchoolService,
+    private vehicleService: VehicleService,
   ) {}
 
   public async paginate(options: IPaginationOptions, recordSearchDto: RecordSearchDto, schoolId: string): Promise<Pagination<Record>> {
@@ -47,9 +49,11 @@ export class RecordService {
       schoolId: record.schoolId,
       plate: record.plate
     });
+    const vehicle = await this.vehicleService.findByPlateSchool(record.plate, record.schoolId);
     return {
       ...record,
-      visitHistory
+      visitHistory,
+      vehicle
     }
   }
 
