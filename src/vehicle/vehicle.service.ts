@@ -85,7 +85,7 @@ export class VehicleService {
       where: {
         id: vehicleViewDto.id,
       },
-      relations: ["school"]
+      relations: ["school", "records"]
     });
     return await this.checkFlag(vehicle);
   }
