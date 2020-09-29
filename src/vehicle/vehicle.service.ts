@@ -19,14 +19,26 @@ export class VehicleService {
     private readonly vehicleRepository: Repository<Vehicle>,
   ) {}
 
+  protected async checkFlag(vehicle: Vehicle): Promise<Vehicle | null> {
+    if (!vehicle) {
+      return null;
+    }
+    const currentDate = moment().subtract(vehicle.school.timezone, 'hours').format('YYYY-MM-DD');
+    if (vehicle.flagged && vehicle.flags.length && vehicle.flags[0].expire === currentDate) {
+      return await this.unflag(vehicle.id);
+    }
+    return vehicle;
+  }
+
   public async findByPlateSchool(plate: string, schoolId: string): Promise<Vehicle | null> {
-    return await this.vehicleRepository.findOne({
+    const vehicle = await this.vehicleRepository.findOne({
       where: {
         plate: plate.toLowerCase(),
         schoolId
       },
-      relations: ["member"]
+      relations: ["member", "school"]
     });
+    return await this.checkFlag(vehicle);
   }
 
   public async paginate(options: IPaginationOptions, schoolId: string): Promise<Pagination<Vehicle>> {
@@ -69,12 +81,22 @@ export class VehicleService {
   }
 
   public async view(vehicleViewDto: VehicleViewDto): Promise<Vehicle> {
-    let vehicle = await this.vehicleRepository.findOne({ id: vehicleViewDto.id });
-    return vehicle;
+    const vehicle = await this.vehicleRepository.findOne({
+      where: {
+        id: vehicleViewDto.id,
+      },
+      relations: ["school"]
+    });
+    return await this.checkFlag(vehicle);
   }
 
   public async update(vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
-    let vehicle = await this.vehicleRepository.findOne({ id: vehicleUpdateDto.id });
+    let vehicle = await this.vehicleRepository.findOne({
+      where: {
+        id: vehicleUpdateDto.id,
+      },
+      relations: ["school"]
+    });
     vehicle = {
       ...vehicle,
       ...vehicleUpdateDto

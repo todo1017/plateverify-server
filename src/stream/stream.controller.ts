@@ -41,9 +41,14 @@ export class StreamController {
       if (offenderReg) {
         visitorType = 'offender';
         visitorName = offenderReg.name;
-      } else if (vehicleReg && vehicleReg.member) {
-        visitorType = vehicleReg.flagged ? 'flagged' : vehicleReg.member.group;
-        visitorName = vehicleReg.member.first_name + ' ' + vehicleReg.member.last_name;
+      } else if (vehicleReg) {
+        if (vehicleReg.member) {
+          visitorType = vehicleReg.member.group;
+          visitorName = vehicleReg.member.first_name + ' ' + vehicleReg.member.last_name;
+        }
+        if (vehicleReg.flagged) {
+          visitorType = 'flagged';
+        }
       }
 
       let location = 'unknown';
