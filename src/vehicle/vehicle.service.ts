@@ -85,7 +85,7 @@ export class VehicleService {
       where: {
         id: vehicleViewDto.id,
       },
-      relations: ["school", "records"]
+      relations: ["school", "records", "member"]
     });
     return await this.checkFlag(vehicle);
   }
@@ -111,13 +111,13 @@ export class VehicleService {
   public async flag(vehicleFlagDto: VehicleFlagDto): Promise<Vehicle> {
     let vehicle = await this.vehicleRepository.findOneOrFail({ id: vehicleFlagDto.id });
     if (vehicle.flags.length) {
-      vehicle.flags[0].end = moment().format('YYYY-MM-DD hh:mm:s');
+      vehicle.flags[0].end = moment().format('YYYY-MM-DD');
     }
     const flags = [
       {
         reason: vehicleFlagDto.reason,
         expire: vehicleFlagDto.expire,
-        start: moment().format('YYYY-MM-DD hh:mm:s')
+        start: moment().format('YYYY-MM-DD')
       },
       ...vehicle.flags
     ]
@@ -132,7 +132,7 @@ export class VehicleService {
   public async unflag(id: string): Promise<Vehicle> {
     let vehicle = await this.vehicleRepository.findOneOrFail({ id });
     if (vehicle.flags.length) {
-      vehicle.flags[0].end = moment().format('YYYY-MM-DD hh:mm:s');
+      vehicle.flags[0].end = moment().format('YYYY-MM-DD');
     }
     vehicle = {
       ...vehicle,

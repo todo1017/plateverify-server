@@ -71,7 +71,12 @@ export class MemberService {
   }
 
   public async view(memberViewDto: MemberViewDto): Promise<Member> {
-    const member = await this.memberRepository.findOne({ id: memberViewDto.id });
+    const member = await this.memberRepository.findOne({
+      where: {
+        id: memberViewDto.id,
+      },
+      relations: ['vehicles'],
+    });
     return member;
   }
 
