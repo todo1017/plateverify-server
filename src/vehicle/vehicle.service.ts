@@ -42,12 +42,11 @@ export class VehicleService {
   }
 
   public async paginate(options: IPaginationOptions, schoolId: string): Promise<Pagination<Vehicle>> {
-    return paginate<Vehicle>(this.vehicleRepository, options, {
-      relations: ['member'],
-      where: {
-        schoolId
-      }
-    });
+    let queryBuilder = this.vehicleRepository.createQueryBuilder('c')
+      .where('c.schoolId = :schoolId', {schoolId})
+      .orderBy('c.plate')
+      .leftJoinAndSelect("c.member", "member");
+    return paginate<Vehicle>(queryBuilder, options);
   }
 
   public async import(vehicleImportDto: VehicleImportDto, file: any, schoolId: string): Promise<any> {

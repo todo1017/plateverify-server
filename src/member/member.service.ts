@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Repository, DeleteResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { VehicleService } from 'src/vehicle/vehicle.service';
 import { Member } from './member.entity';
 import { MemberImportDto } from "./dto/member-import.dto";
 import { MemberViewDto } from './dto/member-view.dto';
@@ -16,25 +15,17 @@ export class MemberService {
   constructor (
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
-    private readonly vehicleService: VehicleService
   ) {}
 
   public async paginate(options: IPaginationOptions, group: string, schoolId: string): Promise<Pagination<Member>> {
+    let queryBuilder = this.memberRepository.createQueryBuilder('c')
+      .where('c.schoolId = :schoolId', {schoolId})
+      .orderBy('c.first_name')
+      .leftJoinAndSelect("c.vehicles", "vehicle");
     if (group !== 'all') {
-      return paginate<Member>(this.memberRepository, options, {
-        where: {
-          group,
-          schoolId
-        },
-        relations: ['vehicles'],
-      });
+      queryBuilder = queryBuilder.where('c.group = :group', {group});
     }
-    return paginate<Member>(this.memberRepository, options, {
-      relations: ['vehicles'],
-      where: {
-        schoolId
-      }
-    });
+    return paginate<Member>(queryBuilder, options);
   }
 
   public async import(memberImportDto: MemberImportDto, file: any, schoolId: string): Promise<any> {
