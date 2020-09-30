@@ -52,4 +52,15 @@ export class RecordController {
     }
   }
 
+  @Post('stats')
+  @Roles(ROLE_SCOPE_SCHOOL)
+  public async stats(@Response() res, @Request() req) {
+    try {
+      const result = await this.recordService.stats(req.user.schoolId);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
+    }
+  }
+
 }

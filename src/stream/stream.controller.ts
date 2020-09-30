@@ -37,15 +37,18 @@ export class StreamController {
       const vehicleReg = await this.vehicleService.findByPlateSchool(plate, schoolReg.id);
 
       let visitorType = 'unknown';
+      let visitorGroup = 'unknown';
       let visitorName = 'unknown';
       let alert = '';
       if (offenderReg) {
         visitorType = 'offender';
+        visitorGroup = 'offender';
         visitorName = offenderReg.name;
         alert = 'active';
       } else if (vehicleReg) {
         if (vehicleReg.member) {
           visitorType = vehicleReg.member.group;
+          visitorGroup = vehicleReg.member.group;
           visitorName = vehicleReg.member.first_name + ' ' + vehicleReg.member.last_name;
         }
         if (vehicleReg.flagged) {
@@ -77,6 +80,7 @@ export class StreamController {
         alert,
         meta: {
           visitorType,
+          visitorGroup,
           visitorName,
           plate,
           location,

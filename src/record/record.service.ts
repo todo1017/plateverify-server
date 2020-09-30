@@ -57,4 +57,29 @@ export class RecordService {
     }
   }
 
+  public async stats(schoolId: string): Promise<any> {
+    const school = await this.schoolService.findById(schoolId);
+    const startDate = moment().subtract(school.timezone, 'hour').startOf('day').add(school.timezone, 'hour');
+    const endDate = startDate.clone().add(1, 'day');
+
+    const records = await this.recordRepository.find({
+      where: {
+        schoolId,
+        created_at: Between(startDate.toDate(), endDate.toDate())
+      }
+    });
+
+    const total = records.length;
+    const student = records.filter(record => record.meta.visitorGroup === 'student').length;
+    const faculty = records.filter(record => record.meta.visitorGroup === 'faculty').length;
+    const unknown = records.filter(record => record.meta.visitorGroup === 'unknown').length;
+
+    return {
+      total,
+      student,
+      faculty,
+      unknown
+    };
+  }
+
 }
