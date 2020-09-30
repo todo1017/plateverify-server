@@ -38,9 +38,11 @@ export class StreamController {
 
       let visitorType = 'unknown';
       let visitorName = 'unknown';
+      let alert = '';
       if (offenderReg) {
         visitorType = 'offender';
         visitorName = offenderReg.name;
+        alert = 'active';
       } else if (vehicleReg) {
         if (vehicleReg.member) {
           visitorType = vehicleReg.member.group;
@@ -48,6 +50,7 @@ export class StreamController {
         }
         if (vehicleReg.flagged) {
           visitorType = 'flagged';
+          alert = 'active';
         }
       }
 
@@ -71,6 +74,7 @@ export class StreamController {
         vehicleId: vehicleReg ? vehicleReg.id : null,
         memberId: vehicleReg ? vehicleReg.memberId : null,
         plate,
+        alert,
         meta: {
           visitorType,
           visitorName,
