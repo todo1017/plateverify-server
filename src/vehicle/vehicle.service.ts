@@ -30,6 +30,10 @@ export class VehicleService {
     return vehicle;
   }
 
+  public async findById(id: string): Promise<Vehicle | null> {
+    return await this.vehicleRepository.findOne({ id });
+  }
+
   public async findByPlateSchool(plate: string, schoolId: string): Promise<Vehicle | null> {
     const vehicle = await this.vehicleRepository.findOne({
       where: {
@@ -143,10 +147,27 @@ export class VehicleService {
   public async find(keyword: string, schoolId: string): Promise<Vehicle[]> {
     let vehicles = await this.vehicleRepository.createQueryBuilder('c')
       .where('c.schoolId = :schoolId', { schoolId })
+      .andWhere('c.memberId is null')
       .andWhere('c.plate like :key', { key: `%${keyword.toLowerCase()}%` })
       .orderBy('c.plate')
       .getMany();
     return vehicles;
+  }
+
+  public async connect(id: string, memberId: string): Promise<Vehicle> {
+    const vehicle = await this.vehicleRepository.findOneOrFail({ id });
+    return await this.vehicleRepository.save({
+      ...vehicle,
+      memberId
+    });
+  }
+
+  public async disconnect(id: string): Promise<Vehicle> {
+    const vehicle = await this.vehicleRepository.findOneOrFail({ id });
+    return await this.vehicleRepository.save({
+      ...vehicle,
+      memberId: null
+    });
   }
 
 }

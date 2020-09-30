@@ -25,6 +25,7 @@ import { MemberViewDto } from './dto/member-view.dto';
 import { MemberUpdateDto } from './dto/member-update.dto';
 import { MemberRemoveDto } from './dto/member-remove.dto';
 import { FindVehicleDto } from './dto/find-vehicle.dto';
+import { ConnectVehicleDto } from './dto/connect-vehicle.dto';
 
 @Controller('member')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -116,6 +117,25 @@ export class MemberController {
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({error});
     }
+  }
+
+  @Post('connect')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  public async connect(@Response() res, @Body() connectVehicleDto: ConnectVehicleDto) {
+    try {
+      const { memberId, remove, add } = connectVehicleDto;
+      for (let i = 0; i < remove.length; i++) {
+        await this.vehicleService.disconnect(remove[i]);
+      }
+      for (let i = 0; i < add.length; i++) {
+        await this.vehicleService.connect(add[i], memberId);
+      }
+      const result = await this.memberService.view({ id: memberId });
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
+    }
+    
   }
 
 }
