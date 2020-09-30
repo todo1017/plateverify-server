@@ -40,17 +40,19 @@ export class AlertService {
       plate: record.plate
     });
     const vehicle = await this.vehicleService.findByPlateSchool(record.plate, record.schoolId);
-
-    await this.recordRepository.save({
-      ...record,
-      alert: 'checked'
-    });
-    
     return {
       ...record,
       visitHistory,
       vehicle
     }
+  }
+
+  public async check(alertViewDto: AlertViewDto): Promise<any> {
+    const record = await this.recordRepository.findOneOrFail({ id: alertViewDto.id });
+    return await this.recordRepository.save({
+      ...record,
+      alert: 'checked'
+    })
   }
 
 }
