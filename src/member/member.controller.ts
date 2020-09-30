@@ -16,6 +16,7 @@ import * as Papa from 'papaparse';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
 import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
+import { VehicleService } from 'src/vehicle/vehicle.service';
 import { MemberService } from './member.service';
 import { Member } from './member.entity';
 import { MemberListDto } from './dto/member-list.dto';
@@ -23,12 +24,16 @@ import { MemberImportDto } from './dto/member-import.dto';
 import { MemberViewDto } from './dto/member-view.dto';
 import { MemberUpdateDto } from './dto/member-update.dto';
 import { MemberRemoveDto } from './dto/member-remove.dto';
+import { FindVehicleDto } from './dto/find-vehicle.dto';
 
 @Controller('member')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
 export class MemberController {
 
-  constructor(private readonly memberService: MemberService) {}
+  constructor(
+    private readonly memberService: MemberService,
+    private readonly vehicleService: VehicleService,
+  ) {}
 
   @Post('list')
   @Roles(ROLE_SCOPE_SCHOOL)
@@ -96,6 +101,21 @@ export class MemberController {
   public async remove(@Response() res, @Body() memberRemoveDto: MemberRemoveDto) {
     const result = await this.memberService.remove(memberRemoveDto);
     return res.status(HttpStatus.OK).json(result);
+  }
+
+  @Post('find')
+  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  public async find(
+    @Response() res,
+    @Request() req,
+    @Body() findVehicleDto: FindVehicleDto
+  ) {
+    try {
+      const result = await this.vehicleService.find(findVehicleDto.keyword, req.user.schoolId);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
+    }
   }
 
 }

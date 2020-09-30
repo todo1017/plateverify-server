@@ -14,7 +14,7 @@ export class MemberService {
 
   constructor (
     @InjectRepository(Member)
-    private readonly memberRepository: Repository<Member>,
+    private readonly memberRepository: Repository<Member>
   ) {}
 
   public async paginate(options: IPaginationOptions, group: string, schoolId: string): Promise<Pagination<Member>> {

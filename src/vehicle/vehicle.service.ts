@@ -140,4 +140,13 @@ export class VehicleService {
     return await this.vehicleRepository.save(vehicle);
   }
 
+  public async find(keyword: string, schoolId: string): Promise<Vehicle[]> {
+    let vehicles = await this.vehicleRepository.createQueryBuilder('c')
+      .where('c.schoolId = :schoolId', { schoolId })
+      .andWhere('c.plate like :key', { key: `%${keyword.toLowerCase()}%` })
+      .orderBy('c.plate')
+      .getMany();
+    return vehicles;
+  }
+
 }
