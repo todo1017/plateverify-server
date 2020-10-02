@@ -129,8 +129,6 @@ export class StreamController {
                     \nEntering at Main Entrance at 08:54 on 10/02/20
                     \nred, suv-standard, RT9807
                     \nDriver: John Doe
-                    \nCheck Plateverify:
-                    \nhttps://plateverify.com
                   `,
                   // mediaUrl: 'https://plateverify.com',
                   from: '+12016693289',
