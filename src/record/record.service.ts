@@ -22,8 +22,8 @@ export class RecordService {
 
   public async paginate(options: IPaginationOptions, recordSearchDto: RecordSearchDto, schoolId: string): Promise<Pagination<Record>> {
     const school = await this.schoolService.findById(schoolId);
-    const startDate = moment(recordSearchDto.startDate, 'YYYY-MM-DD hh:mm:ss').subtract(school.timezone, 'hour').toDate();
-    const endDate = moment(recordSearchDto.endDate, 'YYYY-MM-DD hh:mm:ss').subtract(school.timezone, 'hour').toDate();
+    const startDate = moment(recordSearchDto.startDate, 'YYYY-MM-DD').subtract(school.timezone, 'hour').toDate();
+    const endDate = moment(recordSearchDto.endDate, 'YYYY-MM-DD').subtract(school.timezone, 'hour').toDate();
 
     const queryBuilder = this.recordRepository.createQueryBuilder('c')
       .where('c.schoolId = :id', {id: schoolId})

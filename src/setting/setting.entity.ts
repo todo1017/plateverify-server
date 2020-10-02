@@ -27,7 +27,7 @@ export class Setting {
   category: string;
 
   @Column('simple-json')
-  body: {};
+  body: any;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

@@ -1,27 +1,29 @@
 import {
   Controller,
-  UseGuards,
   HttpStatus,
   Post,
   Response,
-  Request,
   Body,
-  UploadedFile,
-  UseInterceptors
 } from '@nestjs/common';
+import { InjectSendGrid, SendGridService } from '@ntegral/nestjs-sendgrid';
+import { InjectTwilio, TwilioClient } from 'nestjs-twilio';
 import { RecordService } from 'src/record/record.service';
 import { SchoolService } from 'src/school/school.service';
 import { VehicleService } from 'src/vehicle/vehicle.service';
 import { OffenderService } from 'src/offender/offender.service';
+import { SettingService } from 'src/setting/setting.service';
 
 @Controller('stream')
 export class StreamController {
 
   constructor(
+    @InjectSendGrid() private readonly sendgridClient: SendGridService,
+    @InjectTwilio() private readonly twilioClient: TwilioClient,
     private readonly recordService: RecordService,
     private readonly schoolService: SchoolService,
     private readonly vehicleService: VehicleService,
     private readonly offenderService: OffenderService,
+    private readonly settingService: SettingService,
   ) {}
 
   @Post('input')
@@ -71,7 +73,7 @@ export class StreamController {
         }
       }
 
-      this.recordService.create({
+      const record = this.recordService.create({
         schoolId: schoolReg.id,
         offenderId: offenderReg ? offenderReg.id : null,
         vehicleId: vehicleReg ? vehicleReg.id : null,
@@ -92,6 +94,55 @@ export class StreamController {
           photo: `https://cloud.openalpr.com/img/${agent_uid}/${best_uuid}?company_id=${company_id}`
         }
       });
+
+      if (alert) {
+        const alertSetting = await this.settingService.findByCategory(schoolReg.id, 'alert');
+
+        if (alertSetting) {
+          for (let i = 0; i < alertSetting.body.length; i++) {
+            const alertOption = alertSetting.body[i];
+            const isAlert = (visitorType === 'offender' && alertOption.pd) || (visitorType === 'flagged' && alertOption.fv);
+            if (isAlert) {
+              if (alertOption.type === 'email') {
+                this.sendgridClient.send({
+                  to: alertOption.entity,
+                  from: 'admin@plateveiry.com',
+                  templateId: 'd-97ad37c4fc7c4060b42096291f52fe92',
+                  dynamicTemplateData: {
+                    type      : 'Offender',
+                    driver    : 'John Doe',
+                    color     : 'red',
+                    model     : 'suv-standard',
+                    plate     : 'RT9807',
+                    direction : 'ENTERING',
+                    location  : 'Main Entrance',
+                    time      : '08:54',
+                    day       : '10/02/2020',
+                    link      : 'https://plateverify.com',
+                  }
+                });
+              }
+              if (alertOption.type === 'sms') {
+                this.twilioClient.messages.create({
+                  // body: 'SMS Body, sent to the phone!',
+                  body: `Offender Vehicle Detected
+                    \nEntering at Main Entrance at 08:54 on 10/02/20
+                    \nred, suv-standard, RT9807
+                    \nDriver: John Doe
+                    \nCheck Plateverify:
+                    \nhttps://plateverify.com
+                  `,
+                  // mediaUrl: 'https://plateverify.com',
+                  from: '+12016693289',
+                  // from: process.env.TWILIO_PHONE_NUMBER,
+                  to: alertOption.entity,
+                }).then(message => console.log(message));
+              }
+            }
+          }
+        }
+      }
+
       return res.status(HttpStatus.OK).json({ success: true });
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({error});

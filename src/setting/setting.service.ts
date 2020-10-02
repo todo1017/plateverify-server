@@ -27,6 +27,12 @@ export class SettingService {
     return await this.settingRepository.find({ where: { schoolId } });
   }
 
+  public async findByCategory(schoolId: string, category: string): Promise<Setting | null> {
+    return await this.settingRepository.findOne({
+      where: { schoolId, category }
+    });
+  }
+
   public async update(settingUpdateDto: SettingUpdateDto, schoolId: string): Promise<Setting> {
     const setting = await this.settingRepository.findOne({
       where: { schoolId }
