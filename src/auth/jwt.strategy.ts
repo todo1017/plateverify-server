@@ -26,8 +26,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       return done(new UnauthorizedException(), false);
     }
 
-    const school = await this.schoolService.findById(user.schoolId);
-    user.school = school;
+    if (user.schoolId) {
+      const school = await this.schoolService.findById(user.schoolId);
+      user.school = school;
+    }
 
     done(null, user);
   }

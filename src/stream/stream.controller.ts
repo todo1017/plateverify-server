@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectSendGrid, SendGridService } from '@ntegral/nestjs-sendgrid';
 import { InjectTwilio, TwilioClient } from 'nestjs-twilio';
+import * as moment from 'moment';
 import { RecordService } from 'src/record/record.service';
 import { SchoolService } from 'src/school/school.service';
 import { VehicleService } from 'src/vehicle/vehicle.service';
@@ -103,32 +104,34 @@ export class StreamController {
             const alertOption = alertSetting.body[i];
             const isAlert = (visitorType === 'offender' && alertOption.pd) || (visitorType === 'flagged' && alertOption.fv);
             if (isAlert) {
+              const time = moment().subtract(schoolReg.timezone, 'hour').format('h:mm');
+              const day = moment().subtract(schoolReg.timezone, 'hour').format('MM/DD/YY');
               if (alertOption.type === 'email') {
                 this.sendgridClient.send({
                   to: alertOption.entity,
                   from: 'admin@plateveiry.com',
                   templateId: 'd-97ad37c4fc7c4060b42096291f52fe92',
                   dynamicTemplateData: {
-                    type      : 'Offender',
-                    driver    : 'John Doe',
-                    color     : 'red',
-                    model     : 'suv-standard',
-                    plate     : 'RT9807',
-                    direction : 'ENTERING',
-                    location  : 'Main Entrance',
-                    time      : '08:54',
-                    day       : '10/02/2020',
-                    link      : 'https://plateverify.com',
+                    direction,
+                    location,
+                    time,
+                    day,
+                    plate  : plate.toUpperCase(),
+                    type   : visitorType.toUpperCase(),
+                    driver : visitorName,
+                    color  : vehicle.color[0].name,
+                    model  : vehicle.make_model[0].name,
+                    link   : 'https://plateverify.com',
                   }
                 });
               }
               if (alertOption.type === 'sms') {
                 this.twilioClient.messages.create({
                   // body: 'SMS Body, sent to the phone!',
-                  body: `Offender Vehicle Detected
-                    \nEntering at Main Entrance at 08:54 on 10/02/20
-                    \nred, suv-standard, RT9807
-                    \nDriver: John Doe
+                  body: `${visitorType.toUpperCase()} Vehicle Detected
+                    \n${direction} at ${location} at ${time} on ${day}
+                    \n${vehicle.color[0].name}, ${vehicle.make_model[0].name}, ${plate.toUpperCase()}
+                    \nDriver: ${visitorName}
                   `,
                   // mediaUrl: 'https://plateverify.com',
                   from: '+12016693289',

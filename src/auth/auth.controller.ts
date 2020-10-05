@@ -46,12 +46,12 @@ export class AuthController {
       email: req.user.email,
       active: req.user.active,
       roles: req.user.roles,
-      school: {
+      school: req.user.school ? {
         name: req.user.school.name,
         slug: req.user.school.slug,
         logo: req.user.school.logo,
         live: req.user.school.live,
-      }
+      } : null
     });
   }
 
