@@ -98,7 +98,7 @@ export class VehicleService {
       where: {
         id: vehicleUpdateDto.id,
       },
-      relations: ["school"]
+      relations: ["school", "records", "member"]
     });
     vehicle = {
       ...vehicle,
