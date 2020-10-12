@@ -42,16 +42,18 @@ export class AuthController {
     @Request() req
   ) {
     return res.status(HttpStatus.OK).json({
-      name: req.user.name,
-      email: req.user.email,
-      active: req.user.active,
-      roles: req.user.roles,
-      school: req.user.school ? {
-        name: req.user.school.name,
-        slug: req.user.school.slug,
-        logo: req.user.school.logo,
-        live: req.user.school.live,
-      } : null
+      user: {
+        name: req.user.name,
+        email: req.user.email,
+        active: req.user.active,
+        roles: req.user.roles,
+        school: req.user.school ? {
+          name: req.user.school.name,
+          slug: req.user.school.slug,
+          logo: req.user.school.logo,
+          live: req.user.school.live,
+        } : null
+      }
     });
   }
 
