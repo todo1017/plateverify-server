@@ -18,6 +18,7 @@ import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
 import { VehicleService } from './vehicle.service';
 import { Vehicle } from './vehicle.entity';
 import { VehicleListDto } from './dto/vehicle-list.dto';
+import { VehicleSearchDto } from './dto/vehicle-search.dto';
 import { VehicleImportDto } from './dto/vehicle-import.dto';
 import { VehicleViewDto } from './dto/vehicle-view.dto';
 import { VehicleUpdateDto } from './dto/vehicle-update.dto';
@@ -39,6 +40,17 @@ export class VehicleController {
     @Body() vehicleListDto: VehicleListDto
   ): Promise<Pagination<Vehicle>> {
     const result = await this.vehicleService.paginate(vehicleListDto, req.user.schoolId);
+    return res.status(HttpStatus.OK).json(result);
+  }
+
+  @Post('search')
+  @Roles(ROLE_SCOPE_SCHOOL)
+  public async search(
+    @Response() res,
+    @Request() req,
+    @Body() vehicleSearchDto: VehicleSearchDto
+  ): Promise<Pagination<Vehicle>> {
+    const result = await this.vehicleService.search(vehicleSearchDto, vehicleSearchDto.keyword, req.user.schoolId);
     return res.status(HttpStatus.OK).json(result);
   }
 
