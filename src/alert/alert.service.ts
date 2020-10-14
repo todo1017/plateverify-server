@@ -21,8 +21,8 @@ export class AlertService {
 
   public async paginate(options: IPaginationOptions, alertSearchDto: AlertSearchDto, schoolId: string): Promise<Pagination<Record>> {
     const school = await this.schoolService.findById(schoolId);
-    const startDate = moment(alertSearchDto.startDate, 'YYYY-MM-DD').subtract(school.timezone, 'hour').toDate();
-    const endDate = moment(alertSearchDto.endDate, 'YYYY-MM-DD').subtract(school.timezone, 'hour').toDate();
+    const startDate = moment(alertSearchDto.startDate, 'YYYY-MM-DD HH:mm').subtract(school.timezone, 'hour').toDate();
+    const endDate = moment(alertSearchDto.endDate, 'YYYY-MM-DD HH:mm').subtract(school.timezone, 'hour').toDate();
 
     const queryBuilder = this.recordRepository.createQueryBuilder('c')
       .where('c.schoolId = :id', {id: schoolId})
@@ -47,8 +47,8 @@ export class AlertService {
     }
   }
 
-  public async check(alertViewDto: AlertViewDto): Promise<any> {
-    const record = await this.recordRepository.findOneOrFail({ id: alertViewDto.id });
+  public async check(id: string): Promise<any> {
+    const record = await this.recordRepository.findOneOrFail({ id });
     return await this.recordRepository.save({
       ...record,
       alert: 'checked'

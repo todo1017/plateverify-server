@@ -56,7 +56,7 @@ export class AlertController {
   @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
   public async check(@Response() res, @Body() alertViewDto: AlertViewDto) {
     try {
-      const result = await this.alertService.check(alertViewDto);
+      const result = await this.alertService.check(alertViewDto.id);
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({error});
