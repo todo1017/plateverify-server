@@ -102,7 +102,7 @@ export class StreamController {
         if (alertSetting) {
           for (let i = 0; i < alertSetting.body.length; i++) {
             const alertOption = alertSetting.body[i];
-            const isAlert = (visitorType === 'offender' && alertOption.pd) || (visitorType === 'flagged' && alertOption.fv);
+            const isAlert = (visitorType === 'offender' && alertOption.offender) || (visitorType === 'flagged' && alertOption.flagged);
             if (isAlert) {
               const time = moment().subtract(schoolReg.timezone, 'hour').format('h:mm');
               const day = moment().subtract(schoolReg.timezone, 'hour').format('MM/DD/YY');
