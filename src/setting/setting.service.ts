@@ -34,13 +34,15 @@ export class SettingService {
   }
 
   public async update(settingUpdateDto: SettingUpdateDto, schoolId: string): Promise<Setting> {
-    const setting = await this.settingRepository.findOne({
-      where: { schoolId }
+    const setting = await this.settingRepository.findOneOrFail({
+      where: {
+        schoolId,
+        category: settingUpdateDto.category
+      }
     });
     return await this.settingRepository.save({
-      ...settingUpdateDto,
-      schoolId,
-      id: setting.id
+      ...setting,
+      ...settingUpdateDto
     });
   }
 
