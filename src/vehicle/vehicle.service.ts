@@ -53,14 +53,14 @@ export class VehicleService {
     return paginate<Vehicle>(queryBuilder, options);
   }
 
-  public async search(options: IPaginationOptions, keyword: string, schoolId: string): Promise<Pagination<Vehicle>> {
-    let queryBuilder = this.vehicleRepository.createQueryBuilder('c')
+  public async keyword_search(keyword: string, schoolId: string): Promise<Vehicle[]> {
+    return this.vehicleRepository.createQueryBuilder('c')
       .where('c.schoolId = :schoolId', {schoolId})
       .andWhere('c.plate like :keyword', {keyword: `%${keyword.toLowerCase()}%`})
       .andWhere('c.memberId is null')
       .orderBy('c.plate')
-      .leftJoinAndSelect("c.member", "member");
-    return paginate<Vehicle>(queryBuilder, options);
+      .limit(5)
+      .getMany();
   }
 
   public async import(vehicleImportDto: VehicleImportDto, file: any, schoolId: string): Promise<any> {

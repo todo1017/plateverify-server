@@ -43,14 +43,14 @@ export class VehicleController {
     return res.status(HttpStatus.OK).json(result);
   }
 
-  @Post('search')
+  @Post('keyword_search')
   @Roles(ROLE_SCOPE_SCHOOL)
-  public async search(
+  public async keyword_search(
     @Response() res,
     @Request() req,
     @Body() vehicleSearchDto: VehicleSearchDto
   ): Promise<Pagination<Vehicle>> {
-    const result = await this.vehicleService.search(vehicleSearchDto, vehicleSearchDto.keyword, req.user.schoolId);
+    const result = await this.vehicleService.keyword_search(vehicleSearchDto.keyword, req.user.schoolId);
     return res.status(HttpStatus.OK).json(result);
   }
 
