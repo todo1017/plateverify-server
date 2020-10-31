@@ -28,9 +28,8 @@ export class UserController {
   @Post('list')
   @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
   public async list(@Response() res) {
-    const users = await this.userService.findAll();
-    const schools = await this.schoolService.findAll();
-    return res.status(HttpStatus.OK).json({ users, schools });
+    const result = await this.userService.findAll();
+    return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('new')

@@ -48,31 +48,38 @@ export class SchoolController {
     return res.status(HttpStatus.OK).json(result);
   }
 
-  @Post('update')
-  @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
+  @Post('update_logo')
+  @Roles(ROLE_SCOPE_PLATEVERIFY)
   @UseInterceptors(FileInterceptor('file'))
-  public async update(@Response() res, @Body() schoolUpdateDto: SchoolUpdateDto, @UploadedFile() file) {
+  public async update_logo(@Response() res, @Body() body, @UploadedFile() file) {
     try {
-      const cameras = JSON.parse(schoolUpdateDto.cameras).map(camera => ({
+      const result = await this.schoolService.uploadLogo(body.id, file.buffer, file.mimetype.split('/')[1]);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
+    }
+  }
+
+  @Post('update_cameras')
+  @Roles(ROLE_SCOPE_PLATEVERIFY)
+  public async update_cameras(@Response() res, @Body() body) {
+    try {
+      const cameras = body.cameras.map(camera => ({
         ...camera,
         slug: slugify(camera.name, { replacement: '_', lower: true }),
       }));
-  
-      let logo = '';
-      if (file) {
-        logo = await this.schoolService.uploadLogo({
-          id: schoolUpdateDto.id,
-          buffer: file.buffer,
-          ext: file.mimetype.split('/')[1]
-        });
-      }
-      
-      const result = await this.schoolService.update({
-        ...schoolUpdateDto,
-        cameras,
-        logo
-      });
-  
+      const result = await this.schoolService.updateCameras(body.id, cameras);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({error});
+    }
+  }
+
+  @Post('update_general')
+  @Roles(ROLE_SCOPE_PLATEVERIFY)
+  public async update_general(@Response() res, @Body() body) {
+    try {
+      const result = await this.schoolService.updateGeneral(body.id, body.name, body.live, body.timezone);
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({error});

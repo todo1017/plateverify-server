@@ -7,7 +7,6 @@ import { S3 } from 'aws-sdk';
 import { School } from './school.entity';
 import { SchoolCreateDto } from "./dto/school-create.dto";
 import { SchoolUpdateDto } from "./dto/school-update.dto";
-import { SchoolLogoDto } from "./dto/school-logo.dto";
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -59,18 +58,34 @@ export class SchoolService {
     return await this.schoolRepository.delete(id);
   }
 
-  public async uploadLogo(schoolLogoDto: SchoolLogoDto): Promise<any> {
+  public async uploadLogo(id:string, buffer:any, ext:string): Promise<any> {
 
-    let school = await this.schoolRepository.findOneOrFail(schoolLogoDto.id);
+    let school = await this.schoolRepository.findOneOrFail(id);
     
     const s3 = new S3();
     const result = await s3.upload({
       Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
-      Body: schoolLogoDto.buffer,
-      Key: `logo-${school.slug}-${uuidv4()}.${schoolLogoDto.ext}`
+      Body: buffer,
+      Key: `logo-${school.slug}-${uuidv4()}.${ext}`
     }).promise();
 
-    return result.Location;
+    school.logo = result.Location;
+
+    return await this.schoolRepository.save(school);
+  }
+
+  public async updateCameras(id:string, cameras:any): Promise<School> {
+    let school = await this.schoolRepository.findOneOrFail(id);
+    school.cameras = cameras;
+    return await this.schoolRepository.save(school);
+  }
+
+  public async updateGeneral(id:string, name:string, live:string, timezone:number): Promise<School> {
+    let school = await this.schoolRepository.findOneOrFail(id);
+    school.name = name;
+    school.live = live;
+    school.timezone = timezone;
+    return await this.schoolRepository.save(school);
   }
 
 }

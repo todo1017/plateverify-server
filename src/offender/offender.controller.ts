@@ -77,7 +77,7 @@ export class OffenderController {
 
   @Post('list')
   @Roles(ROLE_SCOPE_SCHOOL)
-  public async index(@Response() res, @Body() offenderSearchDto: OffenderSearchDto): Promise<Pagination<Offender>> {
+  public async list(@Response() res, @Body() offenderSearchDto: OffenderSearchDto): Promise<Pagination<Offender>> {
     const result = await this.offenderService.paginate(offenderSearchDto);
     return res.status(HttpStatus.OK).json(result);
   }
