@@ -23,7 +23,7 @@ export class SettingController {
   constructor(private readonly settingService: SettingService) {}
 
   @Post('start')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async start(
     @Response() res,
     @Request() req,
@@ -34,7 +34,7 @@ export class SettingController {
   }
 
   @Post('all')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async all(
     @Response() res,
     @Request() req
@@ -44,7 +44,7 @@ export class SettingController {
   }
 
   @Post('update')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async update(
     @Response() res,
     @Request() req,
