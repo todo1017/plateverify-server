@@ -135,7 +135,6 @@ export class MemberController {
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({error});
     }
-    
   }
 
 }
