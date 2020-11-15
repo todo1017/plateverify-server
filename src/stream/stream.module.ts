@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SendGridModule } from '@ntegral/nestjs-sendgrid';
 import { TwilioModule } from 'nestjs-twilio';
+import { BullModule } from '@nestjs/bull';
 import { StreamController } from './stream.controller';
+import { StreamService } from './stream.service';
+import { StreamQueue } from './stream.queue';
 import { RecordModule } from 'src/record/record.module';
 import { SchoolModule } from 'src/school/school.module';
 import { VehicleModule } from 'src/vehicle/vehicle.module';
@@ -19,12 +22,14 @@ import { SettingModule } from 'src/setting/setting.module';
       // accountSid: process.env.TWILIO_ACCOUNT_SID,
       // authToken: process.env.TWILIO_AUTH_TOKEN,
     }),
+    BullModule.registerQueue({ name: 'stream' }),
     RecordModule,
     SchoolModule,
     VehicleModule,
     OffenderModule,
     SettingModule
   ],
+  providers: [StreamService, StreamQueue],
   controllers: [StreamController]
 })
 export class StreamModule {}
