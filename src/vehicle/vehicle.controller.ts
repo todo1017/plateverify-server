@@ -14,7 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
-import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
+import { ROLE_SCOPE_SCHOOL } from "src/constants/role.type";
 import { VehicleService } from './vehicle.service';
 import { Vehicle } from './vehicle.entity';
 import { VehicleListDto } from './dto/vehicle-list.dto';
@@ -55,7 +55,7 @@ export class VehicleController {
   }
 
   @Post('parse')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   @UseInterceptors(FileInterceptor('file'))
   public async parse(@Response() res, @UploadedFile() file) {
     const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
@@ -67,7 +67,7 @@ export class VehicleController {
   }
 
   @Post('import')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   @UseInterceptors(FileInterceptor('file'))
   public async import(
     @Response() res,
@@ -84,28 +84,28 @@ export class VehicleController {
   }
 
   @Post('view')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async view(@Response() res, @Body() vehicleViewDto: VehicleViewDto) {
     const result = await this.vehicleService.view(vehicleViewDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('update')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async update(@Response() res, @Body() vehicleUpdateDto: VehicleUpdateDto) {
     const result = await this.vehicleService.update(vehicleUpdateDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('remove')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async remove(@Response() res, @Body() vehicleRemoveDto: VehicleRemoveDto) {
     const result = await this.vehicleService.update(vehicleRemoveDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('flag')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async flag(@Response() res, @Body() vehicleFlagDto: VehicleFlagDto) {
     try {
       const result = await this.vehicleService.flag(vehicleFlagDto);
@@ -116,7 +116,7 @@ export class VehicleController {
   }
 
   @Post('unflag')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async unflag(@Response() res, @Body() vehicleViewDto: VehicleViewDto) {
     try {
       const result = await this.vehicleService.unflag(vehicleViewDto.id);
