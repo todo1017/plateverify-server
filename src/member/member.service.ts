@@ -84,4 +84,20 @@ export class MemberService {
     return await this.memberRepository.delete(memberRemoveDto.id);
   }
 
+  public async create(data: any): Promise<Member> {
+    const member = await this.memberRepository.create({
+      schoolId: data.schoolId,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      address: data.address,
+      group: data.group,
+      email: data.email,
+      phone: data.phone,
+      grade: data.grade,
+      graduation: data.graduation,
+      tag: data.tag
+    });
+    return await this.memberRepository.save(member);
+  }
+
 }

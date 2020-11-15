@@ -26,6 +26,7 @@ export class UserService {
   }
 
   public async create(userCreateDto: UserCreateDto): Promise<User> {
+    console.log(userCreateDto);
     let user = await this.usersRepository.findOne({ email: userCreateDto.email });
     if (user) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);

@@ -180,4 +180,17 @@ export class VehicleService {
     });
   }
 
+  public async create(data:any): Promise<Vehicle> {
+    const vehicle = await this.vehicleRepository.create({
+      schoolId: data.schoolId,
+      memberId: data.memberId,
+      plate : data.plate.toLowerCase(),
+      make  : data.make,
+      model : data.model,
+      body  : data.body,
+      color : data.color,
+    });
+    return await this.vehicleRepository.save(vehicle);
+  }
+
 }

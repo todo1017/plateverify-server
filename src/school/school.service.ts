@@ -26,7 +26,7 @@ export class SchoolService {
     });
   }
 
-  public async findById(id: string): Promise<School | null> {
+  public async findById(id: string): Promise<School> {
     return await this.schoolRepository.findOneOrFail(id);
   }
 
@@ -77,6 +77,21 @@ export class SchoolService {
   public async updateCameras(id:string, cameras:any): Promise<School> {
     let school = await this.schoolRepository.findOneOrFail(id);
     school.cameras = cameras;
+    return await this.schoolRepository.save(school);
+  }
+
+  public async addCamera(id:string, camera:any): Promise<School> {
+    let school = await this.schoolRepository.findOneOrFail(id);
+    const newCameras = [
+      ...school.cameras,
+      {
+        name: camera.name,
+        angle: camera.angle,
+        tolerance: camera.tolerance,
+        slug: slugify(camera.name, { replacement: '_', lower: true })
+      }
+    ];
+    school.cameras = newCameras;
     return await this.schoolRepository.save(school);
   }
 

@@ -34,8 +34,9 @@ export class User {
   @ManyToOne(type => School)
   school: School;
 
+  @Column({nullable: true})
   @RelationId((user: User) => user.school)
-  schoolId: string;
+  schoolId: string | null;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

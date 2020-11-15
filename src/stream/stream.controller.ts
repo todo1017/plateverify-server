@@ -74,7 +74,7 @@ export class StreamController {
         }
       }
 
-      const record = this.recordService.create({
+      this.recordService.create({
         schoolId: schoolReg.id,
         offenderId: offenderReg ? offenderReg.id : null,
         vehicleId: vehicleReg ? vehicleReg.id : null,

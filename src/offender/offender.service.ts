@@ -45,4 +45,19 @@ export class OffenderService {
     return true;
   }
 
+  public async create2(data: any): Promise<Offender> {
+    const offender = await this.offenderRepository.create({
+      name          : data.name,
+      address       : data.address,
+      risk_level    : data.risk_level,
+      plate         : data.plate,
+      vehicle_make  : data.vehicle_make,
+      vehicle_model : data.vehicle_model,
+      vehicle_color : data.vehicle_color,
+      vehicle_year  : data.vehicle_year,
+      vehicle_state : data.vehicle_state,
+    });
+    return await this.offenderRepository.save(offender);
+  }
+
 }

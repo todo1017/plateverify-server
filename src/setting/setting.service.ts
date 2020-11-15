@@ -46,4 +46,28 @@ export class SettingService {
     });
   }
 
+  public async addAlertEntity(entities, schoolId: string): Promise<Setting> {
+    const setting = await this.settingRepository.findOne({
+      where: {
+        schoolId,
+        category: 'alert'
+      }
+    });
+    if (setting) {
+      setting.body = [
+        ...setting.body,
+        ...entities
+      ];
+      return await this.settingRepository.save(setting);
+    } else {
+      const record = await this.settingRepository.create({
+        schoolId,
+        category: 'alert',
+        body: entities
+      });
+      return await this.settingRepository.save(record);
+    }
+    
+  }
+
 }

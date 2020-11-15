@@ -11,6 +11,7 @@ import { MemberController } from './member.controller';
     VehicleModule
   ],
   providers: [MemberService],
-  controllers: [MemberController]
+  controllers: [MemberController],
+  exports: [MemberService]
 })
 export class MemberModule {}
