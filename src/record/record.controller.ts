@@ -11,7 +11,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
-import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
+import { ROLE_SCOPE_SCHOOL } from "src/constants/role.type";
 import { RecordService } from './record.service';
 import { Record } from './record.entity';
 import { RecordSearchDto } from './dto/record-search.dto';
@@ -42,7 +42,7 @@ export class RecordController {
   }
 
   @Post('view')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async view(@Response() res, @Body() recordViewDto: RecordViewDto) {
     try {
       const result = await this.recordService.view(recordViewDto);

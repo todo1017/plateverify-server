@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import slugify from "slugify";
 import { RoleGuard } from 'src/guard/role.guard';
 import { Roles } from 'src/guard/roles.decorator';
-import { ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL } from 'src/constants/role.type';
+import { ROLE_SCOPE_PLATEVERIFY } from 'src/constants/role.type';
 import { SchoolService } from './school.service';
 import { SchoolCreateDto } from './dto/school-create.dto';
 import { SchoolUpdateDto } from './dto/school-update.dto';
@@ -35,7 +35,7 @@ export class SchoolController {
   }
 
   @Post('new')
-  @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_PLATEVERIFY)
   public async new(@Response() res, @Body() schoolCreateDto: SchoolCreateDto) {
     const result = await this.schoolService.create(schoolCreateDto);
     return res.status(HttpStatus.OK).json(result);

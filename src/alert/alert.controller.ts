@@ -11,7 +11,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
-import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
+import { ROLE_SCOPE_SCHOOL } from "src/constants/role.type";
 import { Record } from 'src/record/record.entity';
 import { AlertService } from './alert.service';
 import { AlertSearchDto } from './dto/alert-search.dto';
@@ -42,7 +42,7 @@ export class AlertController {
   }
 
   @Post('view')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async view(@Response() res, @Body() alertViewDto: AlertViewDto) {
     try {
       const result = await this.alertService.view(alertViewDto);
@@ -53,7 +53,7 @@ export class AlertController {
   }
 
   @Post('check')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async check(@Response() res, @Body() alertViewDto: AlertViewDto) {
     try {
       const result = await this.alertService.check(alertViewDto.id);

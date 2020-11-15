@@ -15,7 +15,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import * as Papa from 'papaparse';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
-import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
+import { ROLE_SCOPE_SCHOOL } from "src/constants/role.type";
 import { VehicleService } from 'src/vehicle/vehicle.service';
 import { MemberService } from './member.service';
 import { Member } from './member.entity';
@@ -55,7 +55,7 @@ export class MemberController {
   }
 
   @Post('parse')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   @UseInterceptors(FileInterceptor('file'))
   public async parse(@Response() res, @UploadedFile() file) {
     const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
@@ -67,7 +67,7 @@ export class MemberController {
   }
 
   @Post('import')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   @UseInterceptors(FileInterceptor('file'))
   public async import_student(
     @Response() res,
@@ -84,28 +84,28 @@ export class MemberController {
   }
 
   @Post('view')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async view(@Response() res, @Body() memberViewDto: MemberViewDto) {
     const result = await this.memberService.view(memberViewDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('update')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async update(@Response() res, @Body() memberUpdateDto: MemberUpdateDto) {
     const result = await this.memberService.update(memberUpdateDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('remove')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async remove(@Response() res, @Body() memberRemoveDto: MemberRemoveDto) {
     const result = await this.memberService.remove(memberRemoveDto);
     return res.status(HttpStatus.OK).json(result);
   }
 
   @Post('find')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async find(
     @Response() res,
     @Request() req,
@@ -120,7 +120,7 @@ export class MemberController {
   }
 
   @Post('connect')
-  @Roles(ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_SCHOOL)
   public async connect(@Response() res, @Body() connectVehicleDto: ConnectVehicleDto) {
     try {
       const { memberId, remove, add } = connectVehicleDto;

@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
-import { ROLE_SCOPE_PLATEVERIFY, ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
+import { ROLE_SCOPE_PLATEVERIFY, ROLE_SCOPE_SCHOOL } from "src/constants/role.type";
 import { OffenderService } from './offender.service';
 import { Offender } from './offender.entity';
 import { OffenderSearchDto } from './dto/offender-search.dto';
@@ -34,7 +34,7 @@ export class OffenderController {
   }
 
   @Post('parse')
-  @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_PLATEVERIFY)
   @UseInterceptors(FileInterceptor('file'))
   public async parse(@Response() res, @UploadedFile() file) {
     const result = Papa.parse(file.buffer.toString(), {header:true, skipEmptyLines:true});
@@ -47,7 +47,7 @@ export class OffenderController {
   }
 
   @Post('import')
-  @Roles(ROLE_SCOPE_PLATEVERIFY, ROLE_MANAGE_ALL)
+  @Roles(ROLE_SCOPE_PLATEVERIFY)
   @UseInterceptors(FileInterceptor('file'))
   public async import(
     @Response() res,

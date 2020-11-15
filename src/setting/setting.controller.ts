@@ -10,7 +10,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from "src/guard/role.guard";
 import { Roles } from "src/guard/roles.decorator";
-import { ROLE_SCOPE_SCHOOL, ROLE_MANAGE_ALL } from "src/constants/role.type";
+import { ROLE_SCOPE_SCHOOL } from "src/constants/role.type";
 import { SettingService } from './setting.service';
 import { Setting } from './setting.entity';
 import { SettingStartDto } from './dto/setting-start.dto';
