@@ -36,7 +36,9 @@ export class UserService {
 
   public async update(userUpdateDto: UserUpdateDto): Promise<User> {
     let user = await this.usersRepository.findOneOrFail({id: userUpdateDto.id});
-    user.active = userUpdateDto.active;
+    if (user.email !== 'admin@plateverify.com') {
+      user.active = userUpdateDto.active;
+    }
     return await this.usersRepository.save(user);
   }
 
