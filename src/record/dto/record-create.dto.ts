@@ -6,4 +6,6 @@ export class RecordCreateDto {
   plate: string;
   alert: string;
   meta: any;
+  created_at?: any;
+  updated_at?: any;
 }

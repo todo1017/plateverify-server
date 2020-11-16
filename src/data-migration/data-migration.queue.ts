@@ -224,7 +224,8 @@ export class DataMigrationQueue {
           vehicle_color,
           agent_uid,
           best_uuid,
-          company
+          company,
+          created_at
         } = records[i];
 
         const schoolId = await this.dataMigrationService.getValue('school_id', school_id);
@@ -242,7 +243,6 @@ export class DataMigrationQueue {
             visitorType = 'offender';
             visitorGroup = 'offender';
             visitorName = offenderReg.name;
-            alert = 'active';
           } else if (vehicleReg) {
             if (vehicleReg.member) {
               visitorType = vehicleReg.member.group;
@@ -281,7 +281,9 @@ export class DataMigrationQueue {
               vehicleBodyType: vehicle_body_type,
               vehicleColor: vehicle_color,
               photo: `https://cloud.openalpr.com/img/${agent_uid}/${best_uuid}?company_id=${company}`
-            }
+            },
+            created_at,
+            updated_at: created_at
           });
         }
       }
