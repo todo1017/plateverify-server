@@ -51,6 +51,9 @@ export class Record {
   @Column()
   plate: string;
 
+  @Column()
+  region: string;
+
   @Column({ default: '' })
   alert: string;
 

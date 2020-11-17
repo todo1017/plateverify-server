@@ -8,7 +8,7 @@ import {
   ManyToOne,
   RelationId
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { School } from "../school/school.entity";
 
 @Entity()
