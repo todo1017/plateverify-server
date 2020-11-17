@@ -4,6 +4,7 @@ export class RecordCreateDto {
   vehicleId: string;
   memberId: string;
   plate: string;
+  region: string;
   alert: string;
   meta: any;
   created_at?: any;

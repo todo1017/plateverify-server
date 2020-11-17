@@ -24,7 +24,7 @@ export class StreamQueue {
 
   @Process('input')
   async input(job: Job) {
-    let { agent, camera, plate, data: { vehicle, agent_uid, best_uuid, company_id, travel_direction } } = job.data.data;
+    let { agent, camera, plate, data: { vehicle, agent_uid, best_uuid, company_id, travel_direction, best_region } } = job.data.data;
 
     try {
       const schoolReg = await this.schoolService.findBySlug(agent);
@@ -72,6 +72,7 @@ export class StreamQueue {
         vehicleId: vehicleReg ? vehicleReg.id : null,
         memberId: vehicleReg ? vehicleReg.memberId : null,
         plate,
+        region: best_region,
         alert,
         meta: {
           visitorType,
@@ -136,6 +137,7 @@ export class StreamQueue {
         }
       }
     } catch (error) {
+      console.log(error);
       // return res.status(HttpStatus.BAD_REQUEST).json({error});
     }
   }

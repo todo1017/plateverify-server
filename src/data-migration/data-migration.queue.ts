@@ -110,7 +110,6 @@ export class DataMigrationQueue {
       }
       await this.dataMigrationService.updateStatus('setting', 'done');
     } catch (error) {
-      console.log('error', error);
       await this.dataMigrationService.updateStatus('setting', 'error');
     }
   }
@@ -174,7 +173,6 @@ export class DataMigrationQueue {
       }
       await this.dataMigrationService.updateStatus('member', 'done');
     } catch (error) {
-      console.log('error', error);
       await this.dataMigrationService.updateStatus('member', 'error');
     }
   }
@@ -202,7 +200,6 @@ export class DataMigrationQueue {
       }
       await this.dataMigrationService.updateStatus('vehicle', 'done');
     } catch (error) {
-      console.log('error', error);
       await this.dataMigrationService.updateStatus('vehicle', 'error');
     }
   }
@@ -217,6 +214,7 @@ export class DataMigrationQueue {
           school_id,
           camera_id,
           best_plate,
+          region,
           direction_of_travel_degrees,
           vehicle_make,
           vehicle_make_model,
@@ -268,6 +266,7 @@ export class DataMigrationQueue {
             vehicleId: vehicleReg ? vehicleReg.id : null,
             memberId: vehicleReg ? vehicleReg.memberId : null,
             plate: best_plate,
+            region,
             alert,
             meta: {
               visitorType,
@@ -289,7 +288,6 @@ export class DataMigrationQueue {
       }
       await this.dataMigrationService.updateStatus('record', 'done');
     } catch (error) {
-      console.log('error', error);
       await this.dataMigrationService.updateStatus('record', 'error');
     }
   }

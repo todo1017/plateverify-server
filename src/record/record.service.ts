@@ -38,6 +38,7 @@ export class RecordService {
       const record = await this.recordRepository.create(recordCreateDto);
       await this.recordRepository.save(record);
     } catch (error) {
+      console.log(error);
       return false;
     }
     return true;
